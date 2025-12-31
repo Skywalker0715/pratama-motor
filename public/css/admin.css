@@ -1,0 +1,437 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+}
+
+/* Sidebar */
+#admin-sidebar {
+    width: 250px;
+    min-height: 100vh;
+    position: sticky;
+    top: 0;
+    transition: width 0.3s ease;
+}
+
+#admin-sidebar .sidebar-title {
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+#admin-sidebar .nav-link {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    color: rgba(255,255,255,0.85);
+    border-radius: 8px;
+    padding: 0.55rem 0.75rem;
+}
+
+#admin-sidebar .nav-link:hover {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+}
+
+#admin-sidebar .nav-link span {
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+/* Collapsed Sidebar */
+#admin-sidebar.collapsed {
+    width: 80px;
+}
+
+#admin-sidebar.collapsed .sidebar-title {
+    opacity: 0;
+    visibility: hidden;
+}
+
+#admin-sidebar.collapsed .nav-link {
+    justify-content: center;
+}
+
+#admin-sidebar.collapsed .nav-link span {
+    opacity: 0;
+    width: 0;
+    overflow: hidden;
+    margin-left: 0;
+}
+
+#admin-sidebar.collapsed .nav-link i {
+    margin-right: 0 !important;
+}
+
+
+/* Main content */
+#main-content {
+    flex-grow: 1; /* Let flexbox handle the width */
+    min-width: 0; /* Prevents content from overflowing */
+}
+
+#main-content.collapsed {
+    /* No longer needed, flexbox handles it */
+}
+
+/* Navbar */
+.navbar {
+    height: 64px;
+    display: flex;
+    justify-content: space-between;
+}
+
+main {
+    min-height: calc(100vh - 64px);
+}
+
+/* --- Stat Cards --- */
+.stat-card {
+    border: none;
+    border-radius: 14px;
+    background: #ffffff !important;  /* Paksa putih bersih */
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);  /* Shadow lebih terang */    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+
+.stat-card .card-body {
+    flex-grow: 1;
+}
+
+.stat-card .card-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    font-size: 28px;
+}
+
+.stat-card .card-title {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin-bottom: 5px;
+}
+
+.stat-card .card-value {
+    font-size: 2rem;           /* Lebih besar */
+    font-weight: 700;          /* Bold */
+    color: #2d3748 !important; /* Hitam gelap */
+    line-height: 1;   
+}
+
+/* Card Colors */
+.stat-card.card-primary .card-icon {
+    background-color: #e7f0ff;
+    color: #4a8eff;
+}
+
+.stat-card.card-success .card-icon {
+    background-color: #e6f9f0;
+    color: #28a745;
+}
+
+.stat-card.card-warning .card-icon {
+    background-color: #fff8e6;
+    color: #ffc107;
+}
+
+.stat-card.card-info .card-icon {
+    background-color: #e6f7ff;
+    color: #17a2b8;
+}
+
+/* === PRODUCT TABLE === */
+.table th {
+    font-weight: 600;
+    font-size: 13px;
+    text-transform: uppercase;
+    color: #495057;
+}
+
+.table td {
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+/* === BUTTON ICON PROFESSIONAL === */
+.btn-icon {
+    width: 38px;
+    height: 38px;
+    min-width: 38px;
+    min-height: 38px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.2s ease;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.btn-icon:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-icon i {
+    font-size: 16px;
+    line-height: 1;
+    display: block;
+}
+
+/* Button Colors dengan kontras lebih baik */
+.btn-primary.btn-icon {
+    background: #0d6efd !important;
+    color: white !important;
+}
+
+.btn-primary.btn-icon:hover {
+    background: #0b5ed7 !important;
+}
+
+.btn-secondary.btn-icon {
+    background: #495057 !important;
+    color: white !important;
+}
+
+.btn-secondary.btn-icon:hover {
+    background: #343a40 !important;
+}
+
+.btn-success.btn-icon {
+    background: #198754 !important;
+    color: white !important;
+}
+
+.btn-success.btn-icon:hover {
+    background: #157347 !important;
+}
+
+.btn-warning.btn-icon {
+    background: #ffc107 !important;
+    color: #000 !important;
+}
+
+.btn-warning.btn-icon:hover {
+    background: #ffca2c !important;
+}
+
+.btn-danger.btn-icon {
+    background: #dc3545 !important;
+    color: white !important;
+}
+
+.btn-danger.btn-icon:hover {
+    background: #bb2d3b !important;
+}
+
+/* Aksi Button Group - Centered & Gap */
+.btn-icon + .btn-icon,
+.btn-icon + form {
+    margin-left: 4px;
+}
+
+/* Fix untuk kolom AKSI agar button center dan rapi */
+td .d-flex {
+    justify-content: center !important;
+    align-items: center;
+}
+
+td .gap-1 > * {
+    margin: 0 2px;
+}
+
+/* === CARD STYLING === */
+.card {
+    border-radius: 12px;
+    border: 1px solid #e3e6f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1rem 1.25rem;
+}
+
+.card-header h5 {
+    color: white;
+    margin: 0;
+}
+
+.card-header .btn-icon {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+}
+
+.card-header .btn-icon:hover {
+    background: white;
+    color: #667eea;
+}
+
+/* === BADGE STYLING === */
+.badge {
+    font-weight: 500;
+    padding: 4px 10px;
+    font-size: 11px;
+}
+
+/* === SEARCH FORM === */
+.form-control-sm,
+.form-select-sm {
+    border-radius: 6px;
+    border: 1px solid #d1d3e2;
+}
+
+.form-control-sm:focus,
+.form-select-sm:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+/* === TABLE RESPONSIVE === */
+.table-responsive {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table-bordered {
+    border: 1px solid #e3e6f0;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fc;
+}
+
+/* === MODAL STYLING === */
+.modal-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.modal-title {
+    font-weight: 600;
+}
+
+.modal-footer {
+    border-top: 1px solid #e3e6f0;
+}
+
+/* === PAGINATION === */
+.pagination {
+    margin: 0;
+    gap: 4px;
+}
+
+.page-item {
+    margin: 0;
+}
+
+.page-link {
+    border-radius: 6px;
+    border: 1px solid #d1d3e2;
+    color: #667eea;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    min-width: 40px;
+    text-align: center;
+}
+
+.page-link:hover {
+    background-color: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.page-item.active .page-link {
+    background-color: #667eea;
+    border-color: #667eea;
+    color: white;
+}
+
+.page-item.disabled .page-link {
+    color: #6c757d;
+    pointer-events: none;
+    background-color: #fff;
+    border-color: #dee2e6;
+}
+
+/* Hilangkan spacing pagination yang berlebihan */
+.d-flex.justify-content-end {
+    margin-top: 1rem !important;
+}
+
+nav[role="navigation"] {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Khusus untuk arrow Previous/Next */
+.page-link svg {
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+}
+
+/* === STOCK PAGE SPECIFIC === */
+.btn-submit {
+    font-weight: 600;
+    padding: 10px 20px;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+}
+
+.form-label {
+    font-size: 13px;
+    margin-bottom: 6px;
+    color: #495057;
+}
+
+.form-select,
+.form-control {
+    border-radius: 8px;
+    border: 1px solid #d1d3e2;
+    transition: all 0.2s ease;
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+/* Badge with Icons */
+.badge i {
+    font-size: 11px;
+}
+
+/* Header Info */
+.text-dark {
+    color: #2d3748 !important;
+}
+
+h2.fw-bold {
+    font-size: 28px;
+    letter-spacing: -0.5px;
+}
+
+.text-muted {
+    font-size: 14px;
+}

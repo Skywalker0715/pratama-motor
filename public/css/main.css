@@ -1,0 +1,188 @@
+/* Public copy of `resources/css/main.css` - used via asset('css/main.css') */
+body {
+	font-family: 'Poppins', sans-serif;
+}
+
+.hero {
+	min-height: 70vh; /* dari 80vh */
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 2.5rem 0; /* dari 3.5rem */
+}
+
+/* Content card centered with transparent/minimal background */
+.hero-left {
+	background: rgba(255, 255, 255, 0.78); /* lebih transparan */
+	padding: 3rem 2.5rem;
+	border-radius: 18px;
+	max-width: 640px;
+	box-shadow:
+		0 20px 50px rgba(0, 0, 0, 0.18),
+		inset 0 0 0 1px rgba(255,255,255,0.3);
+	backdrop-filter: blur(10px);
+	text-align: center;
+}
+
+.hero-left h1::after {
+	content: "";
+	display: block;
+	width: 60px;
+	height: 4px;
+	background: #dc3545;
+	margin: 1rem auto 0;
+	border-radius: 4px;
+}
+
+
+.hero-left h1 {
+	color: #0c1720;
+	font-size: 2.4rem;
+	line-height: 1.25;
+	margin-bottom: 1rem;
+	font-weight: 700;
+	letter-spacing: -0.3px;
+}
+
+.hero-left p {
+	color: #5a646b;
+	font-size: 1.05rem;
+	margin-bottom: 2rem;
+	line-height: 1.7;
+	max-width: 520px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+/* Page background image */
+html, body {
+	height: 100%;
+}
+
+body {
+	background-image: url('/images/bg-image.png');
+	background-size: cover;
+	background-position: center;
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+}
+
+/* Hero image - visible on right side */
+.hero-img {
+	max-width: 440px;
+	width: 100%;
+	border-radius: 12px;
+	box-shadow: 0 14px 40px rgba(12, 21, 34, 0.12);
+	object-fit: cover;
+}
+
+/* Button dengan warna merah bengkel yang bold */
+.btn-primary {
+	background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+	border: none;
+	color: #ffffff;
+	padding: 1rem 2.5rem;
+	font-weight: 600;
+	font-size: 1.05rem;
+	border-radius: 12px;
+	box-shadow: 0 8px 28px rgba(220, 53, 69, 0.35);
+	display: inline-flex;
+	align-items: center;
+	gap: 0.7rem;
+	transition: all 200ms ease;
+	text-transform: none;
+	letter-spacing: 0.3px;
+}
+
+/* Removed arrow icon styling (icon removed from markup) */
+
+.btn-primary:hover, .btn-primary:focus {
+	transform: translateY(-3px);
+	box-shadow: 0 14px 40px rgba(220, 53, 69, 0.45);
+	background: linear-gradient(135deg, #e4454f 0%, #d02838 100%);
+}
+
+/* Removed hover transform for arrow icon */
+
+/* Navbar - hilangkan dropdown style */
+.navbar {
+	background: rgba(12, 23, 32, 0.95) !important;
+	backdrop-filter: blur(10px);
+	padding: 1rem 0;
+	box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.navbar-brand {
+	font-weight: 700;
+	font-size: 1.4rem;
+	color: #dc3545 !important;
+}
+
+.navbar-nav .nav-link {
+	color: rgba(255,255,255,0.9) !important;
+	font-weight: 500;
+	padding: 0.5rem 1.2rem !important;
+	transition: color 200ms ease;
+}
+
+.navbar-nav .nav-link:hover {
+	color: #dc3545 !important;
+}
+
+
+/* Responsive tweaks */
+@media (max-width: 991px) {
+	.hero {
+		padding: 2rem 0;
+		min-height: auto;
+		flex-direction: column;
+		text-align: center;
+	}
+	
+	.hero-left {
+		background: rgba(255,255,255,0.88);
+		margin: 1rem;
+		padding: 2rem 1.5rem;
+	}
+	
+	.hero-left h1 {
+		font-size: 2.2rem;
+	}
+
+	.hero-img {
+		max-width: 90%;
+		max-height: 280px;
+		margin-top: 1.5rem;
+	}
+	
+	body {
+		background-attachment: scroll;
+	}
+}
+
+@media (max-width: 576px) {
+
+	.hero-img {
+		max-height: 220px;
+	}
+
+	.hero-left {
+		padding: 1.25rem 1rem;
+		margin: 0.5rem;
+		max-width: 100%;
+	}
+	
+	.hero-left h1 {
+		font-size: 1.8rem;
+	}
+	
+	.hero-left p {
+		font-size: 1rem;
+	}
+	
+	.btn-primary {
+		padding: 0.85rem 2rem;
+		font-size: 1rem;
+	}
+
+}
