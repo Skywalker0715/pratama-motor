@@ -14,7 +14,7 @@ class RoleMiddleware
     public function handle(Request $request, Closure $next, $role): Response
     {
         // Cek apakah user sudah login
-         if (!Auth::check()) {
+         if (!Auth::check()) {  
             return redirect('/login');
         }
 

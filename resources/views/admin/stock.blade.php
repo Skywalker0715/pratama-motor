@@ -126,9 +126,11 @@
                     @endforelse
                 </tbody>
             </table>
-            <div class="d-flex justify-content-end p-3">
-    {{ $transaksis->links() }}
-     </div>
+            @if($transaksis->hasPages())
+              <div class="d-flex justify-content-end mt-3">
+                    {{ $transaksis->onEachSide(1)->links('pagination::bootstrap-5') }}
+              </div>
+          @endif
         </div>
     </div>
 </div>

@@ -39,12 +39,14 @@
 
             <div class="col-md-4 text-end">
                 <div class="btn-group" role="group">
-                    <a href="{{ route('admin.reports.excel') }}" class="btn btn-success">
-                        <i class="fas fa-file-excel me-2"></i>Export Excel
-                    </a>
-                    <a href="{{ route('admin.reports.pdf') }}" class="btn btn-danger">
-                        <i class="fas fa-file-pdf me-2"></i>Export PDF
-                    </a>
+                   <a href="{{ route('admin.reports.excel', request()->query()) }}"
+                            class="btn btn-success">
+                               <i class="fas fa-file-excel me-2"></i>Export Excel
+                             </a>
+                            <a href="{{ route('admin.reports.pdf', request()->query()) }}"
+                                     class="btn btn-danger">
+                             <i class="fas fa-file-pdf me-2"></i>Export PDF
+                      </a>
                 </div>
             </div>
         </form>
@@ -91,9 +93,9 @@
                                         <i class="fas fa-times-circle me-1"></i>Hilang
                                     </span>
                                 @elseif($t->jenis == 'penjualan')
-                              <span class="badge bg-primary">
-                                 <i class="fas fa-cash-register me-1"></i>Terjual
-                              </span>
+                                    <span class="badge bg-primary">
+                                        <i class="fas fa-cash-register me-1"></i>Terjual
+                                    </span>
                                 @else
                                     <span class="badge bg-info">
                                         <i class="fas fa-edit me-1"></i>Koreksi
@@ -121,39 +123,53 @@
         </div>
     </div>
 
+    {{-- STATISTIK FOOTER (FIX: 4 CARD SEJAJAR) --}}
     @if($transaksis->count() > 0)
     <div class="card-footer bg-light">
-        <div class="row text-center">
-            <div class="col-md-4">
-                <div class="p-3">
+        <div class="row text-center g-0">
+            {{-- TOTAL MASUK --}}
+            <div class="col-md-3 col-6">
+                <div class="p-3 border-end">
                     <i class="fas fa-arrow-down text-success fa-2x mb-2"></i>
-                    <h6 class="mb-0">Total Masuk</h6>
-                    <h4 class="fw-bold text-success">{{ $transaksis->where('jenis', 'masuk')->sum('jumlah') }}</h4>
+                    <h6 class="mb-1 text-muted small">Total Masuk</h6>
+                    <h4 class="fw-bold text-success mb-0">
+                        {{ $transaksis->where('jenis', 'masuk')->sum('jumlah') }}
+                    </h4>
                 </div>
             </div>
-            <div class="col-md-4 border-start border-end">
-                <div class="p-3">
+
+            {{-- TOTAL RUSAK --}}
+            <div class="col-md-3 col-6">
+                <div class="p-3 border-end">
                     <i class="fas fa-exclamation-triangle text-warning fa-2x mb-2"></i>
-                    <h6 class="mb-0">Total Rusak</h6>
-                    <h4 class="fw-bold text-warning">{{ $transaksis->where('jenis', 'rusak')->sum('jumlah') }}</h4>
+                    <h6 class="mb-1 text-muted small">Total Rusak</h6>
+                    <h4 class="fw-bold text-warning mb-0">
+                        {{ $transaksis->where('jenis', 'rusak')->sum('jumlah') }}
+                    </h4>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="p-3">
+
+            {{-- TOTAL HILANG --}}
+            <div class="col-md-3 col-6">
+                <div class="p-3 border-end">
                     <i class="fas fa-times-circle text-danger fa-2x mb-2"></i>
-                    <h6 class="mb-0">Total Hilang</h6>
-                    <h4 class="fw-bold text-danger">{{ $transaksis->where('jenis', 'hilang')->sum('jumlah') }}</h4>
+                    <h6 class="mb-1 text-muted small">Total Hilang</h6>
+                    <h4 class="fw-bold text-danger mb-0">
+                        {{ $transaksis->where('jenis', 'hilang')->sum('jumlah') }}
+                    </h4>
                 </div>
             </div>
-            <div class="col-md-4 border-start">
-          <div class="p-3">
-        <i class="fas fa-cash-register text-primary fa-2x mb-2"></i>
-        <h6 class="mb-0">Total Terjual</h6>
-        <h4 class="fw-bold text-primary">
-            {{ $transaksis->where('jenis','penjualan')->sum('jumlah') }}
-        </h4>
-    </div>
-</div>
+
+            {{-- TOTAL TERJUAL --}}
+            <div class="col-md-3 col-6">
+                <div class="p-3">
+                    <i class="fas fa-cash-register text-primary fa-2x mb-2"></i>
+                    <h6 class="mb-1 text-muted small">Total Terjual</h6>
+                    <h4 class="fw-bold text-primary mb-0">
+                        {{ $transaksis->where('jenis', 'penjualan')->sum('jumlah') }}
+                    </h4>
+                </div>
+            </div>
         </div>
     </div>
     @endif
