@@ -11,7 +11,6 @@ use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 
 
-
 Route::get('/', function () {
     if (auth()->check()) {
         return auth()->user()->role === 'admin'
