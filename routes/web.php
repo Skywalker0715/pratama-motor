@@ -9,6 +9,10 @@ use App\Http\Controllers\Admin\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
+use App\Http\Controllers\PriceController;
+use App\Http\Controllers\ReturnController;
+
+
 
 
 Route::get('/', function () {
@@ -71,6 +75,19 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
         ->name('admin.users');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])
         ->name('admin.users.destroy');
+
+    // Stock Movements
+    Route::get('/admin/stock-movement', [BarangController::class, 'stockMovement'])
+    ->middleware(['auth', 'role:admin'])->name('admin.stock-movement.index');
+
+    // Price History
+     Route::get('/price-history', [PriceController::class, 'index'])->name('admin.price-history.index');
+
+    //Laporan Keuangan Laba dan Rugi
+    Route::get('/admin/accounting/profit-loss', [LaporanController::class, 'profitLoss'])
+    ->middleware(['auth', 'role:admin'])->name('admin.accounting.profit-loss');
+
+
 });
 
 Route::middleware(['auth', 'role:user', 'prevent-back-history'])->prefix('user')->group(function () {
@@ -78,6 +95,11 @@ Route::middleware(['auth', 'role:user', 'prevent-back-history'])->prefix('user')
             ->name('user.dashboard');
     Route::get('/transaksi', fn () => view('user.transaksi'))->name('user.transaksi');
     Route::get('/history', fn () => view('user.history'))->name('user.history');
+
+    // menu return
+    Route::get('/returns', [ReturnController::class, 'index'])->name('user.returns.index');
+    Route::get('/returns/create/{transaksi}', [ReturnController::class, 'create'])->name('user.returns.create');
+    Route::post('/returns', [ReturnController::class, 'store'])->name('user.returns.store');
 });
 
 
