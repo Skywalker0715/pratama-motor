@@ -76,6 +76,11 @@
                 <span class="material-icons text-gray-600">history</span>
                 Riwayat
             </a>
+              <a href="{{ route('user.return.index') }}"
+           class="flex items-center gap-3 px-4 py-2 rounded {{ request()->routeIs('user.return.*') ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100' }}">
+            <span class="material-icons text-gray-600">keyboard_return</span>
+            Return Barang
+        </a>
         </nav>
     </aside>
 

@@ -13,4 +13,14 @@ class ReturnItem extends Model
         'barang_id',
         'quantity',
     ];
+
+     public function barang()
+    {
+        return $this->belongsTo(Barang::class, 'barang_id');
+    }
+
+    public function return()
+    {
+        return $this->belongsTo(ReturnModel::class, 'return_id');
+    }
 }

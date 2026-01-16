@@ -54,4 +54,9 @@ class ReturnService
             }
         });
     }
+
+    public function getUserReturns(int $userId)
+    {
+        return ReturnModel::where('user_id', $userId)->latest()->get();
+    }
 }

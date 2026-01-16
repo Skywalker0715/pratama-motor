@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Services\ReturnService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Transaksi;
+use App\Models\ReturnModel;
 
 
 Class ReturnController extends Controller
@@ -17,9 +18,29 @@ Class ReturnController extends Controller
         $this->returnService = $returnService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $returns = $this->returnService->getUserReturns(auth()->id());
+        $query = ReturnModel::where('user_id', auth()->id());
+
+        // Filter Search (ID Transaksi)
+        if ($request->filled('search')) {
+            $query->where('transaksi_id', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter Tanggal Mulai
+        if ($request->filled('tanggal_mulai')) {
+            $query->whereDate('tanggal', '>=', $request->tanggal_mulai);
+        }
+
+        // Filter Tanggal Akhir
+        if ($request->filled('tanggal_akhir')) {
+            $query->whereDate('tanggal', '<=', $request->tanggal_akhir);
+        }
+
+        // Get data dengan pagination
+        $returns = $query->latest('tanggal')
+                        ->paginate(10)
+                        ->withQueryString(); // Penting! Agar filter tetap ada saat pindah halaman
 
         return view('user.return.index', compact('returns'));
     }
@@ -53,4 +74,9 @@ Class ReturnController extends Controller
         ->with('success', 'Return berhasil diproses');
     }
 
+     public function show($id)
+    {
+        $return = ReturnModel::with('items')->findOrFail($id);
+        return view('user.return.show', compact('return'));
+    }
 }
