@@ -13,8 +13,6 @@ use App\Http\Controllers\PriceController;
 use App\Http\Controllers\ReturnController;
 
 
-
-
 Route::get('/', function () {
     if (auth()->check()) {
         return auth()->user()->role === 'admin'
@@ -97,9 +95,17 @@ Route::middleware(['auth', 'role:user', 'prevent-back-history'])->prefix('user')
     Route::get('/history', fn () => view('user.history'))->name('user.history');
 
     // menu return
-    Route::get('/returns', [ReturnController::class, 'index'])->name('user.returns.index');
-    Route::get('/returns/create/{transaksi}', [ReturnController::class, 'create'])->name('user.returns.create');
-    Route::post('/returns', [ReturnController::class, 'store'])->name('user.returns.store');
+  Route::get('/return', [ReturnController::class, 'index'])
+        ->name('user.return.index');
+
+    Route::get('/return/create', [ReturnController::class, 'create'])
+        ->name('user.return.create');
+
+    Route::post('/return', [ReturnController::class, 'store'])
+        ->name('user.return.store');
+
+    Route::get('/return/{id}', [ReturnController::class, 'show'])
+        ->name('user.return.show');
 });
 
 
