@@ -2,6 +2,30 @@
 
 @section('content')
 <div class="p-6">
+    <!-- Success Notification -->
+    @if (session('success'))
+        <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg animate-fade-in">
+            <div class="flex items-start gap-3">
+                <span class="material-icons text-green-600">check_circle</span>
+                <div>
+                    <p class="font-medium text-green-800">{{ session('success') }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    <!-- Error Notification -->
+    @if (session('error'))
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div class="flex items-start gap-3">
+                <span class="material-icons text-red-600">error</span>
+                <div>
+                    <p class="font-medium text-red-800">{{ session('error') }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <h1 class="text-2xl font-bold text-gray-800">Riwayat Return Barang</h1>

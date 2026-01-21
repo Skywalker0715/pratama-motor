@@ -2,6 +2,34 @@
 
 @section('content')
 <div class="p-6">
+    <!-- Notification Alert -->
+    @if ($errors->any())
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div class="flex items-start gap-3">
+                <span class="material-icons text-red-600 text-sm">error</span>
+                <div>
+                    <p class="font-medium text-red-800">Validasi Gagal</p>
+                    <ul class="mt-2 text-sm text-red-700 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>• {{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+            <div class="flex items-start gap-3">
+                <span class="material-icons text-red-600">close_circle</span>
+                <div>
+                    <p class="font-medium text-red-800">{{ session('error') }}</p>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <!-- Header with Back Button -->
     <div class="flex items-center gap-4 mb-6">
         <a href="{{ route('user.return.index') }}" 
@@ -75,14 +103,9 @@
                                 <div>
                                     <label class="block text-xs font-medium text-gray-600 mb-1">Barang</label>
                                     <select name="items[0][barang_id]" 
-                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                            class="barang-select w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                             required>
                                         <option value="">-- Pilih Barang --</option>
-                                        @foreach($barangs ?? [] as $barang)
-                                            <option value="{{ $barang->id }}">
-                                                {{ $barang->nama }} - {{ $barang->kode }}
-                                            </option>
-                                        @endforeach
                                     </select>
                                 </div>
 
@@ -177,14 +200,93 @@
     </form>
 </div>
 
-<!-- JavaScript untuk Dynamic Items -->
+<!-- JavaScript untuk Dynamic Items & AJAX -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let itemIndex = 1;
     const container = document.getElementById('items-container');
     const addButton = document.getElementById('add-item');
+    const transaksiSelect = document.getElementById('transaksi_id');
+    const detailDiv = document.getElementById('transaksi-detail');
+    const detailItems = document.getElementById('detail-items');
 
-    // Tambah item baru
+    // ==========================================
+    // MAIN: Fetch & Populate Detail Transaksi + Items
+    // ==========================================
+    transaksiSelect.addEventListener('change', function() {
+        const transaksiId = this.value;
+        
+        if (!transaksiId) {
+            detailDiv.classList.add('hidden');
+            clearAllItems();
+            return;
+        }
+
+        // Show loading state
+        detailDiv.classList.remove('hidden');
+        detailItems.innerHTML = '<li class="text-blue-600">⏳ Memuat detail transaksi...</li>';
+
+        // AJAX Fetch ke endpoint /user/return/items/{id}
+        fetch(`{{ url('/user/return/items') }}/${transaksiId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success === false || data.error) {
+                    throw new Error(data.error || 'Gagal memuat data');
+                }
+
+                // Update detail info
+                detailItems.innerHTML = `
+                    <li><strong>Tanggal:</strong> ${data.tanggal}</li>
+                    <li><strong>Total Transaksi:</strong> ${data.total_formatted}</li>
+                    <li><strong>Jumlah Item:</strong> ${data.items.length} item</li>
+                `;
+
+                // Update dropdown barang untuk semua row
+                populateBarangDropdowns(data.items);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                detailItems.innerHTML = `<li class="text-red-600">❌ Error: ${error.message}</li>`;
+                clearAllItems();
+            });
+    });
+
+    // ==========================================
+    // Populate Barang Dropdown dengan Items dari Transaksi
+    // ==========================================
+    function populateBarangDropdowns(items) {
+        // Buat HTML options dari items yang diterima
+        const options = items.map(item => 
+            `<option value="${item.barang_id}" data-max="${item.jumlah_dibeli}" data-harga="${item.harga_satuan}">
+                ${item.nama_barang} (${item.kode_barang}) - Max: ${item.jumlah_dibeli} unit
+            </option>`
+        ).join('');
+
+        // Update semua select barang yang ada di form
+        document.querySelectorAll('.barang-select').forEach(select => {
+            const currentValue = select.value;
+            select.innerHTML = '<option value="">-- Pilih Barang --</option>' + options;
+            if (currentValue && select.querySelector(`option[value="${currentValue}"]`)) {
+                select.value = currentValue;
+            }
+        });
+    }
+
+    // Clear items ketika transaksi belum dipilih
+    function clearAllItems() {
+        document.querySelectorAll('.barang-select').forEach(select => {
+            select.innerHTML = '<option value="">-- Pilih Barang --</option>';
+        });
+    }
+
+    // ==========================================
+    // Tambah Item Baru (Dynamic Row)
+    // ==========================================
     addButton.addEventListener('click', function() {
         const newItem = document.querySelector('.item-row').cloneNode(true);
         
@@ -197,20 +299,31 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
+        // Add class untuk tracking
+        newItem.querySelector('select').classList.add('barang-select');
+
         // Show remove button
         newItem.querySelector('.remove-item').classList.remove('hidden');
         
         container.appendChild(newItem);
         itemIndex++;
 
-        // Update event listener untuk remove button
+        // Re-populate barang dropdown jika transaksi sudah dipilih
+        if (transaksiSelect.value) {
+            const event = new Event('change');
+            transaksiSelect.dispatchEvent(event);
+        }
+
         updateRemoveButtons();
     });
 
-    // Fungsi untuk update remove buttons
+    // ==========================================
+    // Hapus Item Baris
+    // ==========================================
     function updateRemoveButtons() {
         document.querySelectorAll('.remove-item').forEach(button => {
-            button.addEventListener('click', function() {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
                 if (document.querySelectorAll('.item-row').length > 1) {
                     this.closest('.item-row').remove();
                 }
@@ -218,26 +331,53 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    // Initialize remove buttons
     updateRemoveButtons();
 
-    // Show detail transaksi saat pilih
-    document.getElementById('transaksi_id').addEventListener('change', function() {
-        const detailDiv = document.getElementById('transaksi-detail');
-        if (this.value) {
-            // Simulasi - dalam real case, fetch via AJAX
-            detailDiv.classList.remove('hidden');
-            document.getElementById('detail-items').innerHTML = `
-                <li>Loading detail transaksi...</li>
-            `;
+    // ==========================================
+    // Validasi Jumlah Return saat Submit
+    // ==========================================
+    document.querySelector('form').addEventListener('submit', function(e) {
+        let hasError = false;
 
-            // TODO: Fetch real data via AJAX
-            // fetch('/api/transaksi/' + this.value)
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         // Update detail items
-            //     });
-        } else {
-            detailDiv.classList.add('hidden');
+        document.querySelectorAll('.item-row').forEach(row => {
+            const barangSelect = row.querySelector('.barang-select');
+            const jumlahInput = row.querySelector('input[name*="[jumlah]"]');
+
+            if (!barangSelect.value) {
+                barangSelect.classList.add('border-red-500');
+                hasError = true;
+            }
+
+            if (!jumlahInput.value || parseInt(jumlahInput.value) <= 0) {
+                jumlahInput.classList.add('border-red-500');
+                hasError = true;
+            }
+
+            // Validasi jumlah tidak melebihi max
+            const selectedOption = barangSelect.options[barangSelect.selectedIndex];
+            if (selectedOption && selectedOption.dataset.max) {
+                const maxJumlah = parseInt(selectedOption.dataset.max);
+                const returnJumlah = parseInt(jumlahInput.value) || 0;
+
+                if (returnJumlah > maxJumlah) {
+                    alert(`Jumlah return tidak boleh melebihi ${maxJumlah} untuk barang ini`);
+                    jumlahInput.classList.add('border-red-500');
+                    hasError = true;
+                }
+            }
+        });
+
+        if (hasError) {
+            e.preventDefault();
+            alert('Silakan isi semua field dengan benar');
+        }
+    });
+
+    // Clear error styling saat user mulai input
+    document.addEventListener('input', function(e) {
+        if (e.target.classList.contains('barang-select') || e.target.name.includes('[jumlah]')) {
+            e.target.classList.remove('border-red-500');
         }
     });
 });

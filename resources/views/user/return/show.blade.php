@@ -1,11 +1,24 @@
 @extends('layouts.user')
 
 @section('content')
+<style>
+    .no-print {
+        print-color-adjust: none;
+        -webkit-print-color-adjust: none;
+    }
+    
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+    }
+</style>
+
 <div class="p-6">
     <!-- Header with Back Button -->
-    <div class="flex items-center gap-4 mb-6">
+    <div class="flex items-center gap-4 mb-6" id="header-section">
         <a href="{{ route('user.return.index') }}" 
-           class="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-200 hover:bg-gray-300 transition">
+           class="flex items-center justify-center w-10 h-10 rounded-lg bg-gray-200 hover:bg-gray-300 transition no-print">
             <span class="material-icons">arrow_back</span>
         </a>
         <div>
@@ -61,20 +74,20 @@
                             {{ $return->items->count() }} Item
                         </p>
                         <p class="text-xs text-gray-400">
-                            {{ $return->items->sum('jumlah') }} Unit
+                            {{ $return->items->sum('quantity') }} Unit
                         </p>
                     </div>
                 </div>
             </div>
 
             <!-- Catatan Return (jika ada) -->
-            @if($return->catatan)
+            @if($return->alasan)
             <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <div class="flex items-start gap-2">
                     <span class="material-icons text-yellow-600 text-sm">note</span>
                     <div>
-                        <p class="text-sm font-medium text-yellow-800">Catatan:</p>
-                        <p class="text-sm text-yellow-700 mt-1">{{ $return->catatan }}</p>
+                        <p class="text-sm font-medium text-yellow-800">Catatan Return:</p>
+                        <p class="text-sm text-yellow-700 mt-1">{{ $return->alasan }}</p>
                     </div>
                 </div>
             </div>
@@ -119,24 +132,24 @@
                             {{ $index + 1 }}
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-900">
-                            <div class="font-medium">{{ $item->barang->nama ?? 'N/A' }}</div>
-                            <div class="text-xs text-gray-500">SKU: {{ $item->barang->kode ?? '-' }}</div>
+                            <div class="font-medium">{{ $item->barang->nama_barang ?? 'N/A' }}</div>
+                            <div class="text-xs text-gray-500">SKU: {{ $item->barang->kode_barang ?? '-' }}</div>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center text-sm">
                             <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                {{ $item->jumlah }} Unit
+                                {{ $item->quantity }} Unit
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 text-right">
-                            Rp {{ number_format($item->harga_satuan, 0, ',', '.') }}
+                            Rp {{ number_format($item->barang->harga ?? 0, 0, ',', '.') }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 text-right">
-                            Rp {{ number_format($item->harga_satuan * $item->jumlah, 0, ',', '.') }}
+                            Rp {{ number_format(($item->barang->harga ?? 0) * $item->quantity, 0, ',', '.') }}
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-700">
                             <span class="inline-flex items-center gap-1 px-2 py-1 rounded text-xs bg-gray-100">
-                                <span class="material-icons text-xs">info</span>
-                                {{ $item->alasan ?? 'Tidak ada alasan' }}
+                                <span class="material-icons text-xs">check_circle</span>
+                                Dikembalikan
                             </span>
                         </td>
                     </tr>
@@ -149,7 +162,7 @@
                         </td>
                         <td class="px-6 py-4 text-right text-lg font-bold text-red-600">
                             Rp {{ number_format($return->items->sum(function($item) {
-                                return $item->harga_satuan * $item->jumlah;
+                                return ($item->barang->harga ?? 0) * $item->quantity;
                             }), 0, ',', '.') }}
                         </td>
                         <td></td>
@@ -160,7 +173,7 @@
     </div>
 
     <!-- Action Buttons -->
-    <div class="mt-6 flex gap-3">
+    <div class="mt-6 flex gap-3 no-print">
         <a href="{{ route('user.return.index') }}" 
            class="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
             <span class="material-icons text-sm">arrow_back</span>
@@ -172,39 +185,163 @@
             <span class="material-icons text-sm">print</span>
             Cetak
         </button>
-
-        <!-- Kalau mau ada tombol hapus return -->
-        @if(auth()->user()->role === 'admin')
-        <form action="{{ route('user.return.destroy', $return->id) }}" method="POST" 
-              onsubmit="return confirm('Yakin ingin menghapus return ini?')">
-            @csrf
-            @method('DELETE')
-            <button type="submit" 
-                    class="flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition">
-                <span class="material-icons text-sm">delete</span>
-                Hapus
-            </button>
-        </form>
-        @endif
     </div>
 </div>
 
 <!-- Print Styles -->
 <style>
 @media print {
-    body * {
-        visibility: hidden;
+    /* Reset default styles */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
     }
-    .p-6, .p-6 * {
-        visibility: visible;
+    
+    html, body {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        margin: 0;
     }
+    
+    /* Main content container */
     .p-6 {
-        position: absolute;
-        left: 0;
-        top: 0;
+        padding: 1cm !important;
+        width: 100% !important;
+        display: block !important;
     }
-    button, a[href*="index"] {
+    
+    /* Show content, hide everything else */
+    body > * {
         display: none !important;
+    }
+    
+    body > .p-6 {
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    /* Hide buttons and interactive elements */
+    button, a.flex, .mt-6 {
+        display: none !important;
+    }
+    
+    /* Optimize typography for print */
+    body {
+        font-family: Arial, sans-serif;
+        font-size: 11pt;
+        color: #000;
+        line-height: 1.4;
+    }
+    
+    h1 {
+        font-size: 16pt !important;
+        margin-bottom: 0.3cm !important;
+    }
+    
+    h2 {
+        font-size: 13pt !important;
+        margin-top: 0.3cm !important;
+        margin-bottom: 0.2cm !important;
+    }
+    
+    /* Card styling for print */
+    .bg-white {
+        border: 1px solid #ccc !important;
+        page-break-inside: avoid !important;
+        margin-bottom: 0.5cm !important;
+    }
+    
+    /* Grid optimization */
+    .grid {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.5cm !important;
+        page-break-inside: avoid !important;
+    }
+    
+    /* Table styling */
+    table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        font-size: 10pt !important;
+        margin: 0.3cm 0 !important;
+    }
+    
+    th, td {
+        border: 1px solid #999 !important;
+        padding: 0.2cm !important;
+        text-align: left !important;
+    }
+    
+    th {
+        background-color: #e0e0e0 !important;
+        font-weight: bold !important;
+        color: #333 !important;
+    }
+    
+    tfoot {
+        font-weight: bold !important;
+        background-color: #f5f5f5 !important;
+    }
+    
+    /* Alert styling */
+    .bg-yellow-50 {
+        background-color: #fef3c7 !important;
+        border: 1px solid #fbbf24 !important;
+        padding: 0.3cm !important;
+        page-break-inside: avoid !important;
+    }
+    
+    /* Badges */
+    .inline-flex {
+        display: inline-block !important;
+        padding: 0.1cm 0.2cm !important;
+        font-size: 9pt !important;
+    }
+    
+    /* Icon styling for print */
+    .material-icons {
+        display: none !important;
+    }
+    
+    /* Page break rules */
+    @page {
+        size: A4;
+        margin: 0.8cm;
+    }
+    
+    /* Prevent orphans and widows */
+    p, h1, h2, h3 {
+        orphans: 2;
+        widows: 2;
+    }
+    
+    /* Ensure proper spacing */
+    .flex {
+        display: flex !important;
+    }
+    
+    .gap-3 {
+        gap: 0.3cm !important;
+    }
+    
+    /* Info boxes */
+    .p-3 {
+        padding: 0.2cm !important;
+        font-size: 10pt !important;
+    }
+}
+
+@media print and (color) {
+    /* Color-aware printing */
+    .text-red-600 {
+        color: #cc0000 !important;
+    }
+    
+    .text-green-600 {
+        color: #008000 !important;
     }
 }
 </style>

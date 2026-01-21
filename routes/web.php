@@ -101,12 +101,12 @@ Route::middleware(['auth', 'role:user', 'prevent-back-history'])->prefix('user')
     Route::get('/return/create', [ReturnController::class, 'create'])
         ->name('user.return.create');
 
+    Route::get('/return/items/{id}', [ReturnController::class, 'getItems'])
+        ->name('user.return.items');
+
     Route::post('/return', [ReturnController::class, 'store'])
         ->name('user.return.store');
 
     Route::get('/return/{id}', [ReturnController::class, 'show'])
         ->name('user.return.show');
 });
-
-
-
