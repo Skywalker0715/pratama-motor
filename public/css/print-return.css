@@ -1,0 +1,528 @@
+/* Print Styles for Return Detail - FINAL FIX */
+
+@media print {
+    /* ============================================
+       RESET
+       ============================================ */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        box-sizing: border-box !important;
+        margin-left: 0 !important;
+    }
+
+    /* FORCE EVERYTHING TO LEFT EDGE */
+    body,
+    body *:not(table):not(tr):not(td):not(th) {
+        margin-left: 0 !important;
+        text-align: left !important;
+    }
+
+    /* Keep center only for header title */
+    #header-section,
+    #header-section * {
+        text-align: center !important;
+    }
+
+    /* Hide unnecessary elements */
+    nav,
+    aside,
+    header,
+    footer,
+    .no-print,
+    button,
+    a.flex.items-center,
+    .mt-6.flex,
+    .sidebar,
+    [class*="material-icons"],
+    svg,
+    .bg-gray-200,
+    #header-section a {
+        display: none !important;
+    }
+
+    /* ============================================
+       PAGE SETUP
+       ============================================ */
+    @page {
+        size: A4 portrait;
+        margin: 0.8cm 0.5cm 0.8cm 0.5cm;
+        @top-left {
+            content: "1/22/26, 3:49 PM";
+            font-size: 9pt;
+            color: #666;
+        }
+        @top-right {
+            content: "Kasir - Pratama Motor";
+            font-size: 9pt;
+            color: #666;
+        }
+        @bottom-left {
+            content: none;
+        }
+        @bottom-center {
+            content: none;
+        }
+        @bottom-right {
+            content: none;
+        }
+    }
+
+    html,
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white;
+        color: #000;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 10.5pt;
+        line-height: 1.35;
+        width: 210mm !important;
+    }
+
+    /* Remove body::before to avoid double header */
+    body::before,
+    body::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    /* ============================================
+       MAIN CONTAINER - FORCE LEFT ALIGN
+       ============================================ */
+    .p-6,
+    .w-full {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        display: block !important;
+    }
+
+    /* Force all content to left */
+    .p-6 > *,
+    .w-full > * {
+        margin-left: 0 !important;
+        margin-right: auto !important;
+    }
+
+    /* ============================================
+       HEADER - CENTER
+       ============================================ */
+    #header-section {
+        margin-bottom: 0.35cm !important;
+        padding-bottom: 0.25cm !important;
+        border-bottom: 2px solid #000 !important;
+        text-align: center !important;
+    }
+
+    #header-section > div {
+        display: block !important;
+        text-align: center !important;
+    }
+
+    #header-section h1 {
+        font-size: 18pt !important;
+        font-weight: bold !important;
+        margin: 0 0 0.1cm 0 !important;
+        color: #000 !important;
+        text-align: center !important;
+    }
+
+    #header-section p {
+        font-size: 11pt !important;
+        margin: 0 !important;
+        color: #333 !important;
+        text-align: center !important;
+    }
+
+    /* ============================================
+       CARDS - FULL WIDTH LEFT
+       ============================================ */
+    .bg-white.rounded-lg.shadow {
+        background: white !important;
+        border: 1px solid #999 !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        margin: 0 0 0.35cm 0 !important;
+        padding: 0.35cm !important;
+        page-break-inside: avoid !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Force cards to left edge */
+    .bg-white.rounded-lg.shadow:first-of-type {
+        margin-left: 0 !important;
+    }
+
+    /* ============================================
+       GRID
+       ============================================ */
+    .grid {
+        display: block !important;
+        margin: 0 !important;
+        width: 100% !important;
+    }
+
+    .grid > div {
+        display: block !important;
+        width: 100% !important;
+        margin: 0 0 0.25cm 0 !important;
+        padding: 0.15cm 0 !important;
+        border-bottom: 1px dotted #999 !important;
+    }
+
+    .grid > div:last-child {
+        border-bottom: none !important;
+        margin-bottom: 0 !important;
+    }
+
+    .grid .flex.items-start > div:first-child {
+        display: none !important;
+    }
+
+    .grid .flex.items-start {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    .grid .flex.items-start > div:last-child {
+        display: block !important;
+        width: 100% !important;
+    }
+
+    .grid .flex.items-start > div:last-child p:first-child {
+        font-size: 8.5pt !important;
+        color: #666 !important;
+        margin: 0 0 0.05cm 0 !important;
+        text-transform: uppercase !important;
+        font-weight: 600 !important;
+    }
+
+    .grid .flex.items-start > div:last-child p:nth-child(2) {
+        font-size: 12pt !important;
+        font-weight: bold !important;
+        color: #000 !important;
+        margin: 0 0 0.05cm 0 !important;
+    }
+
+    .grid .flex.items-start > div:last-child p:nth-child(3),
+    .grid .flex.items-start > div:last-child a {
+        font-size: 8.5pt !important;
+        color: #666 !important;
+        margin: 0 !important;
+    }
+
+    /* ============================================
+       CATATAN RETURN
+       ============================================ */
+    .bg-yellow-50 {
+        background: #fff9db !important;
+        border: 1.5px solid #f59e0b !important;
+        padding: 0.3cm !important;
+        margin: 0.25cm 0 !important;
+        page-break-inside: avoid !important;
+        width: 100% !important;
+    }
+
+    .bg-yellow-50 .flex {
+        display: block !important;
+    }
+
+    .bg-yellow-50 .flex > span {
+        display: none !important;
+    }
+
+    .bg-yellow-50 p:first-child {
+        font-weight: bold !important;
+        margin: 0 0 0.1cm 0 !important;
+        font-size: 11pt !important;
+        color: #000 !important;
+    }
+
+    .bg-yellow-50 p:last-child {
+        font-size: 11pt !important;
+        line-height: 1.4 !important;
+        color: #000 !important;
+        margin: 0 !important;
+    }
+
+    /* ============================================
+       TABLE - FULL WIDTH NO CENTER
+       ============================================ */
+    .overflow-x-auto {
+        overflow: visible !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    table {
+        width: 100% !important;
+        max-width: 100% !important;
+        border-collapse: collapse !important;
+        margin: 0 !important;
+        font-size: 9.5pt !important;
+        page-break-inside: auto !important;
+        table-layout: fixed !important;
+    }
+
+    table,
+    .overflow-x-auto table {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    thead {
+        display: table-header-group !important;
+        background: #e5e7eb !important;
+    }
+
+    tbody {
+        display: table-row-group !important;
+    }
+
+    tfoot {
+        display: table-footer-group !important;
+        background: #f3f4f6 !important;
+    }
+
+    tr {
+        page-break-inside: avoid !important;
+    }
+
+    th {
+        border: 1px solid #666 !important;
+        padding: 0.2cm 0.1cm !important;
+        background: #d1d5db !important;
+        color: #000 !important;
+        font-weight: bold !important;
+        font-size: 9pt !important;
+        text-align: left !important;
+        vertical-align: middle !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+    }
+
+    td {
+        border: 1px solid #999 !important;
+        padding: 0.15cm 0.1cm !important;
+        background: white !important;
+        color: #000 !important;
+        font-size: 9.5pt !important;
+        line-height: 1.35 !important;
+        vertical-align: middle !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        max-width: 0 !important;
+    }
+
+    /* Nama Barang */
+    td:nth-child(2) div:first-child {
+        font-size: 10.5pt !important;
+        font-weight: bold !important;
+        margin: 0 0 0.05cm 0 !important;
+        word-wrap: break-word !important;
+    }
+
+    td:nth-child(2) div:last-child {
+        font-size: 8pt !important;
+        color: #666 !important;
+        margin: 0 !important;
+        word-wrap: break-word !important;
+    }
+
+    /* Column widths - OPTIMIZED */
+    th:nth-child(1),
+    td:nth-child(1) {
+        width: 5% !important;
+    }
+
+    th:nth-child(2),
+    td:nth-child(2) {
+        width: 20% !important;
+    }
+
+    th:nth-child(3),
+    td:nth-child(3) {
+        width: 12% !important;
+    }
+
+    th:nth-child(4),
+    td:nth-child(4) {
+        width: 18% !important;
+    }
+
+    th:nth-child(5),
+    td:nth-child(5) {
+        width: 18% !important;
+    }
+
+    th:nth-child(6),
+    td:nth-child(6) {
+        width: 17% !important;
+    }
+
+    /* Table alignment */
+    td:nth-child(3),
+    th:nth-child(3) {
+        text-align: center !important;
+    }
+
+    td:nth-child(4),
+    td:nth-child(5),
+    th:nth-child(4),
+    th:nth-child(5) {
+        text-align: right !important;
+    }
+
+    td:nth-child(6),
+    th:nth-child(6) {
+        text-align: center !important;
+        font-size: 9pt !important;
+    }
+
+    /* Footer total */
+    tfoot td {
+        padding: 0.25cm 0.1cm !important;
+        font-size: 11pt !important;
+        font-weight: bold !important;
+        word-wrap: break-word !important;
+    }
+
+    tfoot td:nth-child(2) {
+        font-size: 13pt !important;
+        color: #dc2626 !important;
+        text-align: right !important;
+    }
+
+    /* ============================================
+       BADGES - FIX OVERFLOW
+       ============================================ */
+    .inline-flex {
+        display: inline-block !important;
+        background: #f3f4f6 !important;
+        border: 1px solid #999 !important;
+        padding: 0.08cm 0.15cm !important;
+        font-size: 9pt !important;
+        color: #000 !important;
+        border-radius: 2px !important;
+        font-weight: 600 !important;
+        white-space: nowrap !important;
+        word-wrap: normal !important;
+    }
+
+    .inline-flex .material-icons,
+    .inline-flex span[class*="material"] {
+        display: none !important;
+    }
+
+    .bg-red-100 {
+        background: #fee2e2 !important;
+        border-color: #991b1b !important;
+    }
+
+    .text-red-800,
+    .text-red-600 {
+        color: #991b1b !important;
+    }
+
+    /* ============================================
+       TEXT UTILITIES
+       ============================================ */
+    .text-gray-500,
+    .text-gray-600 {
+        color: #666 !important;
+    }
+
+    .text-gray-700,
+    .text-gray-800,
+    .text-gray-900 {
+        color: #000 !important;
+    }
+
+    .text-xs {
+        font-size: 8.5pt !important;
+    }
+
+    .text-sm {
+        font-size: 9.5pt !important;
+    }
+
+    .text-lg {
+        font-size: 12pt !important;
+    }
+
+    .font-semibold,
+    .font-bold {
+        font-weight: bold !important;
+    }
+
+    .whitespace-nowrap {
+        white-space: normal !important;
+    }
+
+    .uppercase {
+        text-transform: uppercase !important;
+    }
+
+    /* ============================================
+       SECTION HEADERS
+       ============================================ */
+    .px-6.py-4.border-b {
+        background: #e5e7eb !important;
+        border-bottom: 1.5px solid #666 !important;
+        padding: 0.25cm !important;
+        margin: 0 !important;
+    }
+
+    .px-6.py-4.border-b h2 {
+        font-size: 13pt !important;
+        font-weight: bold !important;
+        color: #000 !important;
+        margin: 0 !important;
+    }
+
+    /* ============================================
+       LINKS
+       ============================================ */
+    a {
+        color: #000 !important;
+        text-decoration: none !important;
+    }
+
+    a[href]:after {
+        content: none !important;
+    }
+
+    /* Prevent bad breaks */
+    h1, h2, h3 {
+        page-break-after: avoid !important;
+    }
+
+    p, h1, h2, h3 {
+        orphans: 2;
+        widows: 2;
+    }
+}
+
+/* Color printing */
+@media print and (color) {
+    .text-red-600,
+    .text-red-800 {
+        color: #dc2626 !important;
+    }
+}
+
+/* Monochrome */
+@media print and (monochrome) {
+    thead,
+    .bg-gray-50,
+    .bg-yellow-50 {
+        background: #f0f0f0 !important;
+    }
+}

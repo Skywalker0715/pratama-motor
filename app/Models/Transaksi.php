@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+
 
 class Transaksi extends Model
 {
@@ -21,11 +23,14 @@ class Transaksi extends Model
         'jenis',
         'tanggal',
         'keterangan',
+        'transaksi_kode',
     ];
 
     protected $casts = [
-        'tanggal' => 'date',
         'jumlah' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'tanggal'    => 'datetime',
     ];
 
     public function user()
@@ -36,5 +41,15 @@ class Transaksi extends Model
     public function barang()
     {
         return $this->belongsTo(Barang::class);
+    }
+
+    public function getCreatedAtAttribute($value)
+    {
+    return Carbon::parse($value)->timezone('Asia/Jakarta');
+    }
+
+    public function getTanggalAttribute($value)
+    {
+    return Carbon::parse($value)->timezone('Asia/Jakarta');
     }
 }

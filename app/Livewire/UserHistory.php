@@ -16,6 +16,7 @@ class UserHistory extends Component
     public $showDetailModal = false;
     public $selectedDate;
     public $detailTransaksi = [];
+    public $viewMode = 'continuous';
     
     // Filter properties
     public $filterBulan = '';
@@ -70,26 +71,45 @@ class UserHistory extends Component
         $this->resetPage();
     }
 
-    public function showDetail($tanggal)
+    public function setViewMode(string $mode)
     {
-        $this->selectedDate = $tanggal;
+        $this->viewMode = $mode;
+    }
+
+    public function showDetail($identifier)
+    {
+        // Identifier bisa berupa transaksi_kode (string TRX-...) atau ID (integer) untuk data lama
+        $this->selectedDate = null; 
+        $this->viewMode = 'continuous';
         
-        $this->detailTransaksi = Transaksi::with('barang')
-            ->where('user_id', Auth::id())
-            ->whereDate('transaksi.created_at', $tanggal)
-            ->select('transaksi.*')
-            ->orderBy('transaksi.created_at', 'asc')
-            ->get()
+        $query = Transaksi::with('barang')
+            ->where('user_id', Auth::id());
+
+        if (str_starts_with((string)$identifier, 'TRX-')) {
+            $query->where('transaksi_kode', $identifier);
+        } else {
+            // Fallback untuk data lama (legacy)
+            $query->where('id', $identifier);
+        }
+            
+        $data = $query->orderBy('created_at', 'asc')->get();
+
+        if ($data->isNotEmpty()) {
+            $this->selectedDate = $data->first()->created_at;
+        }
+
+        $this->detailTransaksi = $data
             ->map(function ($transaksi) {
                 return [
                     'id' => $transaksi->id,
-                    'waktu' => $transaksi->created_at->format('H:i:s'),
+                    'waktu' => $transaksi->created_at->timezone('Asia/Jakarta')->format('H:i'),                    
                     'nama_barang' => $transaksi->barang->nama_barang,
                     'kategori' => $transaksi->barang->kategori,
                     'harga_satuan' => $transaksi->barang->harga,
                     'jumlah' => $transaksi->jumlah,
                     'subtotal' => $transaksi->barang->harga * $transaksi->jumlah,
                     'jenis' => $transaksi->jenis,
+                    'transaksi_kode' => $transaksi->transaksi_kode,
                 ];
             });
 
@@ -106,13 +126,17 @@ class UserHistory extends Component
     public function render()
     {
         $query = Transaksi::select(
-                DB::raw('DATE(transaksi.created_at) as tanggal'),
-                DB::raw('COUNT(*) as total_transaksi'),
+                // Gunakan COALESCE untuk mengelompokkan: Jika ada kode, pakai kode. Jika tidak (lama), pakai ID.
+                DB::raw('COALESCE(transaksi_kode, transaksi.id) as kode_referensi'),
+                DB::raw('MAX(transaksi_kode) as display_kode'),
+                DB::raw('MAX(transaksi.created_at) as tanggal'),
+                DB::raw('COUNT(*) as total_item_rows'),
                 DB::raw('SUM(transaksi.jumlah) as total_item'),
                 DB::raw('SUM(transaksi.jumlah * barang.harga) as total_harga')
             )
             ->join('barang', 'barang.id', '=', 'transaksi.barang_id')
-            ->where('transaksi.user_id', Auth::id());
+            ->where('transaksi.user_id', Auth::id())
+            ->where('jenis', 'penjualan'); // Fokus hanya pada penjualan kasir
 
         // Apply filter bulan
         if ($this->filterBulan !== '') {
@@ -124,7 +148,7 @@ class UserHistory extends Component
             $query->whereYear('transaksi.created_at', $this->filterTahun);
         }
 
-        $histories = $query->groupBy(DB::raw('DATE(transaksi.created_at)'))
+        $histories = $query->groupBy(DB::raw('COALESCE(transaksi_kode, transaksi.id)'))
             ->orderByDesc('tanggal')
             ->paginate(10);
 

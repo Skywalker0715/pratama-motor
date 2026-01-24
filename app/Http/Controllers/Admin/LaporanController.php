@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Exports\TransaksiExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
-
+use Carbon\Carbon;
 
 
 class LaporanController extends Controller
@@ -18,12 +18,17 @@ class LaporanController extends Controller
     $baseQuery = Transaksi::with(['barang','user'])
         ->orderBy('created_at','desc');
 
-    if ($request->filled('from') && $request->filled('to')) {
-        $baseQuery->whereBetween('created_at', [
-            $request->from.' 00:00:00',
-            $request->to.' 23:59:59'
-        ]);
-    }
+   if ($request->filled('from') && $request->filled('to')) {
+    $from = Carbon::parse($request->from, 'Asia/Jakarta')
+        ->startOfDay()
+        ->timezone('UTC');
+
+    $to = Carbon::parse($request->to, 'Asia/Jakarta')
+        ->endOfDay()
+        ->timezone('UTC');
+
+    $baseQuery->whereBetween('created_at', [$from, $to]);
+}
 
     $transaksis = (clone $baseQuery)
         ->paginate(10)

@@ -5,7 +5,7 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         {{-- FORM TRANSAKSI --}}
-        <div class="lg:col-span-2">
+        <div class="lg:col-span-2 space-y-6">
             <div class="bg-white rounded-xl shadow-lg p-6">
                 
                 @if (session()->has('success'))
@@ -22,7 +22,7 @@
                     </div>
                 @endif
 
-                <form wire:submit.prevent="simpanTransaksi" class="space-y-5">
+                <form wire:submit.prevent="tambahKeKeranjang" class="space-y-5">
 
                     {{-- SEARCH BARANG --}}
                     <div>
@@ -91,17 +91,90 @@
                     {{-- SUBMIT BUTTON --}}
                     <button 
                         type="submit"
-                        class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all font-semibold shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
-                        <span class="material-icons">shopping_cart</span>
-                        Simpan Transaksi
+                        class="w-full bg-gray-800 text-white py-3 rounded-lg hover:bg-gray-900 transition-all font-semibold shadow-lg hover:shadow-xl flex items-center justify-center gap-2">
+                        <span class="material-icons">add_shopping_cart</span>
+                        Tambah ke Keranjang
                     </button>
 
                 </form>
             </div>
+
+            {{-- KERANJANG BELANJA --}}
+            @if(count($cart) > 0)
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+                <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="font-bold text-gray-800 flex items-center gap-2">
+                        <span class="material-icons text-blue-600">shopping_cart</span>
+                        Keranjang Belanja
+                    </h3>
+                    <span class="bg-blue-100 text-blue-800 text-xs font-bold px-2 py-1 rounded-full">{{ count($cart) }} Item</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left">
+                        <thead class="bg-gray-50 text-gray-600 font-semibold border-b">
+                            <tr>
+                                <th class="px-4 py-3">Barang</th>
+                                <th class="px-4 py-3 text-right">Harga</th>
+                                <th class="px-4 py-3 text-center">Qty</th>
+                                <th class="px-4 py-3 text-right">Subtotal</th>
+                                <th class="px-4 py-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            @foreach($cart as $index => $item)
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 font-medium text-gray-900">{{ $item['nama_barang'] }}</td>
+                                <td class="px-4 py-3 text-right">Rp {{ number_format($item['harga'], 0, ',', '.') }}</td>
+                                <td class="px-4 py-3 text-center">{{ $item['jumlah'] }}</td>
+                                <td class="px-4 py-3 text-right font-semibold text-blue-600">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</td>
+                                <td class="px-4 py-3 text-center">
+                                    <button wire:click="hapusDariKeranjang({{ $index }})" class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 transition-colors" title="Hapus">
+                                        <span class="material-icons text-sm">delete</span>
+                                    </button>
+                                </td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot class="bg-gray-50 border-t border-gray-200">
+                            <tr>
+                                <td colspan="3" class="px-4 py-3 text-right font-bold text-gray-700">Total Akhir</td>
+                                <td class="px-4 py-3 text-right font-bold text-blue-700 text-lg">Rp {{ number_format($grandTotal, 0, ',', '.') }}</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            @endif
         </div>
 
         {{-- INFO PANEL KANAN --}}
         <div class="lg:col-span-1 space-y-6">
+            
+            {{-- CHECKOUT CARD --}}
+            @if(count($cart) > 0)
+                <div class="bg-gradient-to-br from-blue-600 to-blue-800 rounded-xl shadow-lg p-5 text-white border border-blue-700">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="material-icons text-blue-200">payments</span>
+                        <h3 class="font-bold text-lg">Total Pembayaran</h3>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <p class="text-blue-100 text-sm mb-1">Grand Total</p>
+                        <p class="text-3xl font-bold">Rp {{ number_format($grandTotal, 0, ',', '.') }}</p>
+                        <p class="text-blue-200 text-xs mt-1">{{ count($cart) }} item di keranjang</p>
+                    </div>
+                    
+                    <button 
+                        wire:click="simpanTransaksi"
+                        wire:loading.attr="disabled"
+                        class="w-full bg-white text-blue-700 py-3 rounded-lg hover:bg-blue-50 transition-all font-bold shadow-md flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed">
+                        <span wire:loading.remove class="material-icons">check_circle</span>
+                        <span wire:loading class="material-icons animate-spin">sync</span>
+                        Proses Checkout
+                    </button>
+                </div>
+            @endif
             
             {{-- PREVIEW BARANG TERPILIH --}}
             @if($selectedBarang)

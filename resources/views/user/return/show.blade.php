@@ -1,20 +1,11 @@
 @extends('layouts.user')
 
 @section('content')
-<style>
-    .no-print {
-        print-color-adjust: none;
-        -webkit-print-color-adjust: none;
-    }
-    
-    @media print {
-        .no-print {
-            display: none !important;
-        }
-    }
-</style>
+<!-- Print Stylesheet -->
+<link rel="stylesheet" href="{{ asset('css/print-return.css') }}" media="print">
 
-<div class="p-6">
+<div id="a4-content">
+<div class="w-full p-6">
     <!-- Header with Back Button -->
     <div class="flex items-center gap-4 mb-6" id="header-section">
         <a href="{{ route('user.return.index') }}" 
@@ -173,176 +164,119 @@
     </div>
 
     <!-- Action Buttons -->
-    <div class="mt-6 flex gap-3 no-print">
-        <a href="{{ route('user.return.index') }}" 
-           class="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition">
-            <span class="material-icons text-sm">arrow_back</span>
-            Kembali
-        </a>
-        
+    <div class="flex gap-3 no-print mt-6">
+        {{-- Cetak A4 --}}
         <button onclick="window.print()" 
-                class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
-            <span class="material-icons text-sm">print</span>
-            Cetak
+                class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition">
+            <span class="material-icons">print</span>
+            Cetak A4
         </button>
+
+        {{-- Cetak Struk Thermal --}}
+        <button onclick="printThermal()" 
+                class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg transition">
+            <span class="material-icons">receipt</span>
+            Cetak Struk
+        </button>
+    </div>
+
+    <script>
+    function printThermal() {
+        // Add class to body to trigger thermal styles
+        document.body.classList.add('thermal-mode');
+        
+        // Hide A4 content, show thermal receipt
+        document.getElementById('thermal-receipt').style.display = 'block';
+        
+        // Print
+        window.print();
+        
+        // Hide thermal receipt again after print dialog closes
+        setTimeout(() => {
+            document.getElementById('thermal-receipt').style.display = 'none';
+            document.body.classList.remove('thermal-mode');
+        }, 100);
+    }
+    </script>
+</div>
+</div>
+
+{{-- THERMAL RECEIPT SECTION (HIDDEN BY DEFAULT) --}}
+<div id="thermal-receipt" style="display: none;">
+    <style>
+        @media print {
+            body.thermal-mode * { display: none !important; }
+            body.thermal-mode #thermal-receipt, body.thermal-mode #thermal-receipt * { display: block !important; }
+            
+            @page { 
+                size: 80mm auto; 
+                margin: 0; 
+            }
+            
+            #thermal-receipt {
+                width: 80mm !important;
+                font-family: 'Courier New', monospace !important;
+                font-size: 11px !important;
+                line-height: 1.4 !important;
+                padding: 5mm !important;
+            }
+        }
+    </style>
+
+    <div style="text-align: center; margin-bottom: 5mm;">
+        <div style="font-size: 16px; font-weight: bold;">PRATAMA MOTOR</div>
+        <div style="font-size: 12px; font-weight: bold; margin-top: 2mm;">BUKTI RETURN BARANG</div>
+    </div>
+
+    <div style="border-top: 2px solid #000; margin: 3mm 0;"></div>
+
+    <table style="width: 100%; font-size: 11px;">
+        <tr>
+            <td>ID Return</td>
+            <td style="text-align: right; font-weight: bold;">#{{ $return->id }}</td>
+        </tr>
+        <tr>
+            <td>Tanggal</td>
+            <td style="text-align: right;">{{ \Carbon\Carbon::parse($return->tanggal)->format('d M Y H:i') }}</td>
+        </tr>
+        <tr>
+            <td>ID Transaksi</td>
+            <td style="text-align: right;">#{{ $return->transaksi_id }}</td>
+        </tr>
+    </table>
+
+    <div style="border-top: 1px dashed #000; margin: 3mm 0;"></div>
+
+    @foreach($return->items as $item)
+    <div style="margin: 3mm 0;">
+        <div style="font-weight: bold;">{{ $item->barang->nama_barang ?? 'N/A' }}</div>
+        <div style="font-size: 10px;">SKU: {{ $item->barang->kode_barang ?? '-' }}</div>
+        <div style="display: flex; justify-content: space-between; margin-top: 1mm;">
+            <span>{{ $item->quantity }} x Rp {{ number_format($item->barang->harga ?? 0, 0, ',', '.') }}</span>
+            <span style="font-weight: bold;">Rp {{ number_format($item->quantity * ($item->barang->harga ?? 0), 0, ',', '.') }}</span>
+        </div>
+    </div>
+    @endforeach
+
+    <div style="border-top: 2px solid #000; margin: 3mm 0;"></div>
+
+    <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin: 2mm 0;">
+        <span>TOTAL RETURN</span>
+        <span>Rp {{ number_format($return->items->sum(fn($item) => $item->quantity * ($item->barang->harga ?? 0)), 0, ',', '.') }}</span>
+    </div>
+
+    <div style="border-top: 2px solid #000; margin: 3mm 0;"></div>
+
+    @if($return->alasan)
+    <div style="margin: 3mm 0; padding: 2mm; border: 1px dashed #000; font-size: 10px;">
+        <strong>Alasan:</strong> {{ $return->alasan }}
+    </div>
+    @endif
+
+    <div style="text-align: center; margin-top: 5mm; font-size: 10px;">
+        <p>Terima kasih</p>
+        <p>Dicetak: {{ now()->format('d/m/Y H:i') }}</p>
     </div>
 </div>
 
-<!-- Print Styles -->
-<style>
-@media print {
-    /* Reset default styles */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-    
-    html, body {
-        width: 100%;
-        height: 100%;
-        padding: 0;
-        margin: 0;
-    }
-    
-    /* Main content container */
-    .p-6 {
-        padding: 1cm !important;
-        width: 100% !important;
-        display: block !important;
-    }
-    
-    /* Show content, hide everything else */
-    body > * {
-        display: none !important;
-    }
-    
-    body > .p-6 {
-        display: block !important;
-        visibility: visible !important;
-    }
-    
-    /* Hide buttons and interactive elements */
-    button, a.flex, .mt-6 {
-        display: none !important;
-    }
-    
-    /* Optimize typography for print */
-    body {
-        font-family: Arial, sans-serif;
-        font-size: 11pt;
-        color: #000;
-        line-height: 1.4;
-    }
-    
-    h1 {
-        font-size: 16pt !important;
-        margin-bottom: 0.3cm !important;
-    }
-    
-    h2 {
-        font-size: 13pt !important;
-        margin-top: 0.3cm !important;
-        margin-bottom: 0.2cm !important;
-    }
-    
-    /* Card styling for print */
-    .bg-white {
-        border: 1px solid #ccc !important;
-        page-break-inside: avoid !important;
-        margin-bottom: 0.5cm !important;
-    }
-    
-    /* Grid optimization */
-    .grid {
-        display: grid !important;
-        grid-template-columns: repeat(3, 1fr) !important;
-        gap: 0.5cm !important;
-        page-break-inside: avoid !important;
-    }
-    
-    /* Table styling */
-    table {
-        width: 100% !important;
-        border-collapse: collapse !important;
-        font-size: 10pt !important;
-        margin: 0.3cm 0 !important;
-    }
-    
-    th, td {
-        border: 1px solid #999 !important;
-        padding: 0.2cm !important;
-        text-align: left !important;
-    }
-    
-    th {
-        background-color: #e0e0e0 !important;
-        font-weight: bold !important;
-        color: #333 !important;
-    }
-    
-    tfoot {
-        font-weight: bold !important;
-        background-color: #f5f5f5 !important;
-    }
-    
-    /* Alert styling */
-    .bg-yellow-50 {
-        background-color: #fef3c7 !important;
-        border: 1px solid #fbbf24 !important;
-        padding: 0.3cm !important;
-        page-break-inside: avoid !important;
-    }
-    
-    /* Badges */
-    .inline-flex {
-        display: inline-block !important;
-        padding: 0.1cm 0.2cm !important;
-        font-size: 9pt !important;
-    }
-    
-    /* Icon styling for print */
-    .material-icons {
-        display: none !important;
-    }
-    
-    /* Page break rules */
-    @page {
-        size: A4;
-        margin: 0.8cm;
-    }
-    
-    /* Prevent orphans and widows */
-    p, h1, h2, h3 {
-        orphans: 2;
-        widows: 2;
-    }
-    
-    /* Ensure proper spacing */
-    .flex {
-        display: flex !important;
-    }
-    
-    .gap-3 {
-        gap: 0.3cm !important;
-    }
-    
-    /* Info boxes */
-    .p-3 {
-        padding: 0.2cm !important;
-        font-size: 10pt !important;
-    }
-}
-
-@media print and (color) {
-    /* Color-aware printing */
-    .text-red-600 {
-        color: #cc0000 !important;
-    }
-    
-    .text-green-600 {
-        color: #008000 !important;
-    }
-}
-</style>
 @endsection
