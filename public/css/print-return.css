@@ -8,20 +8,6 @@
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
         box-sizing: border-box !important;
-        margin-left: 0 !important;
-    }
-
-    /* FORCE EVERYTHING TO LEFT EDGE */
-    body,
-    body *:not(table):not(tr):not(td):not(th) {
-        margin-left: 0 !important;
-        text-align: left !important;
-    }
-
-    /* Keep center only for header title */
-    #header-section,
-    #header-section * {
-        text-align: center !important;
     }
 
     /* Hide unnecessary elements */
@@ -34,11 +20,24 @@
     a.flex.items-center,
     .mt-6.flex,
     .sidebar,
-    [class*="material-icons"],
+    .material-icons,
     svg,
     .bg-gray-200,
     #header-section a {
         display: none !important;
+    }
+
+    /* FORCE EVERYTHING TO LEFT EDGE */
+    body,
+    body *:not(table):not(tr):not(td):not(th):not(#a4-content) {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+
+    /* Keep center only for header title */
+    #header-section,
+    #header-section * {
+        text-align: center !important;
     }
 
     /* ============================================
@@ -72,8 +71,8 @@
     body {
         margin: 0 !important;
         padding: 0 !important;
-        background: white;
-        color: #000;
+        background: white !important;
+        color: #000 !important;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 10.5pt;
         line-height: 1.35;
@@ -87,9 +86,47 @@
         display: none !important;
     }
 
+    /* THERMAL RECEIPT SPECIAL HANDLING */
+    body.thermal-mode #a4-content {
+        display: none !important;
+    }
+
+    body.thermal-mode #thermal-receipt {
+        display: block !important;
+    }
+
+    #thermal-receipt {
+        width: 80mm !important;
+        max-width: 80mm !important;
+        font-family: 'Courier New', monospace !important;
+        font-size: 11px !important;
+        line-height: 1.4 !important;
+        padding: 5mm !important;
+        margin: 0 !important;
+    }
+
+    #thermal-receipt * {
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    #thermal-receipt div {
+        width: 100% !important;
+    }
+
+    #thermal-receipt table {
+        width: 100% !important;
+    }
+
     /* ============================================
        MAIN CONTAINER - FORCE LEFT ALIGN
        ============================================ */
+    #a4-content {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
     .p-6,
     .w-full {
         padding: 0 !important;

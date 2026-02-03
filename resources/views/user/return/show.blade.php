@@ -185,7 +185,7 @@
         // Add class to body to trigger thermal styles
         document.body.classList.add('thermal-mode');
         
-        // Hide A4 content, show thermal receipt
+        // Show thermal receipt
         document.getElementById('thermal-receipt').style.display = 'block';
         
         // Print
@@ -195,7 +195,7 @@
         setTimeout(() => {
             document.getElementById('thermal-receipt').style.display = 'none';
             document.body.classList.remove('thermal-mode');
-        }, 100);
+        }, 500);
     }
     </script>
 </div>
@@ -205,8 +205,8 @@
 <div id="thermal-receipt" style="display: none;">
     <style>
         @media print {
-            body.thermal-mode * { display: none !important; }
-            body.thermal-mode #thermal-receipt, body.thermal-mode #thermal-receipt * { display: block !important; }
+            body.thermal-mode #a4-content { display: none !important; }
+            body.thermal-mode #thermal-receipt { display: block !important; }
             
             @page { 
                 size: 80mm auto; 
@@ -217,65 +217,65 @@
                 width: 80mm !important;
                 font-family: 'Courier New', monospace !important;
                 font-size: 11px !important;
-                line-height: 1.4 !important;
+                line-height: 1.3 !important;
                 padding: 5mm !important;
             }
         }
     </style>
 
-    <div style="text-align: center; margin-bottom: 5mm;">
+    <div style="text-align: center; margin-bottom: 3mm;">
         <div style="font-size: 16px; font-weight: bold;">PRATAMA MOTOR</div>
-        <div style="font-size: 12px; font-weight: bold; margin-top: 2mm;">BUKTI RETURN BARANG</div>
+        <div style="font-size: 12px; font-weight: bold; margin-top: 1mm;">BUKTI RETURN BARANG</div>
     </div>
 
-    <div style="border-top: 2px solid #000; margin: 3mm 0;"></div>
+    <div style="border-top: 2px solid #000; margin: 2mm 0;"></div>
 
-    <table style="width: 100%; font-size: 11px;">
-        <tr>
-            <td>ID Return</td>
-            <td style="text-align: right; font-weight: bold;">#{{ $return->id }}</td>
-        </tr>
-        <tr>
-            <td>Tanggal</td>
-            <td style="text-align: right;">{{ \Carbon\Carbon::parse($return->tanggal)->format('d M Y H:i') }}</td>
-        </tr>
-        <tr>
-            <td>ID Transaksi</td>
-            <td style="text-align: right;">#{{ $return->transaksi_id }}</td>
-        </tr>
-    </table>
+    <div style="margin: 1mm 0; font-size: 10px;">
+        <div style="display: flex; justify-content: space-between;">
+            <span>ID Return</span>
+            <span style="font-weight: bold;">#{{ $return->id }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 0.5mm;">
+            <span>Tanggal</span>
+            <span>{{ \Carbon\Carbon::parse($return->tanggal)->format('d M Y H:i') }}</span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 0.5mm;">
+            <span>ID Transaksi</span>
+            <span style="font-weight: bold;">#{{ $return->transaksi_id }}</span>
+        </div>
+    </div>
 
-    <div style="border-top: 1px dashed #000; margin: 3mm 0;"></div>
+    <div style="border-top: 1px dashed #000; margin: 1mm 0;"></div>
 
     @foreach($return->items as $item)
-    <div style="margin: 3mm 0;">
+    <div style="margin: 2mm 0; font-size: 10px;">
         <div style="font-weight: bold;">{{ $item->barang->nama_barang ?? 'N/A' }}</div>
-        <div style="font-size: 10px;">SKU: {{ $item->barang->kode_barang ?? '-' }}</div>
-        <div style="display: flex; justify-content: space-between; margin-top: 1mm;">
+        <div style="font-size: 9px; color: #666;">SKU: {{ $item->barang->kode_barang ?? '-' }}</div>
+        <div style="display: flex; justify-content: space-between; margin-top: 0.5mm;">
             <span>{{ $item->quantity }} x Rp {{ number_format($item->barang->harga ?? 0, 0, ',', '.') }}</span>
             <span style="font-weight: bold;">Rp {{ number_format($item->quantity * ($item->barang->harga ?? 0), 0, ',', '.') }}</span>
         </div>
     </div>
     @endforeach
 
-    <div style="border-top: 2px solid #000; margin: 3mm 0;"></div>
+    <div style="border-top: 2px solid #000; margin: 1mm 0;"></div>
 
-    <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: bold; margin: 2mm 0;">
+    <div style="display: flex; justify-content: space-between; font-size: 12px; font-weight: bold; margin: 1mm 0;">
         <span>TOTAL RETURN</span>
         <span>Rp {{ number_format($return->items->sum(fn($item) => $item->quantity * ($item->barang->harga ?? 0)), 0, ',', '.') }}</span>
     </div>
 
-    <div style="border-top: 2px solid #000; margin: 3mm 0;"></div>
+    <div style="border-top: 2px solid #000; margin: 1mm 0;"></div>
 
     @if($return->alasan)
-    <div style="margin: 3mm 0; padding: 2mm; border: 1px dashed #000; font-size: 10px;">
+    <div style="margin: 1mm -5mm 1mm -5mm; padding: 1mm 5mm; border-left: 1px dashed #000; border-right: 1px dashed #000; font-size: 9px;">
         <strong>Alasan:</strong> {{ $return->alasan }}
     </div>
     @endif
 
-    <div style="text-align: center; margin-top: 5mm; font-size: 10px;">
-        <p>Terima kasih</p>
-        <p>Dicetak: {{ now()->format('d/m/Y H:i') }}</p>
+    <div style="text-align: center; margin-top: 2mm; font-size: 9px;">
+        <p style="margin: 1mm 0;">Terima kasih</p>
+        <p style="margin: 0;">Dicetak: {{ now()->format('d/m/Y H:i') }}</p>
     </div>
 </div>
 
