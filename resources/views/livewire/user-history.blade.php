@@ -260,12 +260,21 @@
                     </div>
 
                     {{-- TOMBOL CETAK --}}
-                    <button 
-                        onclick="window.print()"
-                        class="text-gray-500 hover:text-blue-600 transition-colors p-1 mr-2"
-                        title="Cetak Transaksi">
-                        <span class="material-icons">print</span>
-                    </button>
+                    @if($viewMode === 'continuous')
+                        <button 
+                            wire:click="printDetail"
+                            class="text-gray-500 hover:text-blue-600 transition-colors p-1 mr-2"
+                            title="Cetak PDF Transaksi">
+                            <span class="material-icons">print</span>
+                        </button>
+                    @else
+                        <button 
+                            onclick="window.print()"
+                            class="text-gray-500 hover:text-blue-600 transition-colors p-1 mr-2"
+                            title="Cetak Transaksi">
+                            <span class="material-icons">print</span>
+                        </button>
+                    @endif
 
                     <button 
                         wire:click="closeModal"

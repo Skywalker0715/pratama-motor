@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Transaksi;
 use Carbon\Carbon;
 
@@ -155,5 +156,18 @@ class UserHistory extends Component
         return view('livewire.user-history', [
             'histories' => $histories
         ]);
+    }
+
+    public function printDetail()
+    {
+        $pdf = Pdf::loadView('user.print-history.print-detail-continuous', [
+            'selectedDate' => $this->selectedDate,
+            'detailTransaksi' => $this->detailTransaksi
+        ])->setPaper('a4');
+
+        return response()->streamDownload(
+            fn () => print($pdf->output()),
+            'detail-transaksi-' . ($this->selectedDate ? \Carbon\Carbon::parse($this->selectedDate)->format('d-m-Y') : 'unknown') . '.pdf'
+        );
     }
 }
