@@ -4,7 +4,9 @@ namespace App\Exports;
 
 use Maatwebsite\Excel\Concerns\WithHeadings;    
 use App\Models\Transaksi;
+use App\Models\StockMovement;
 use Maatwebsite\Excel\Concerns\FromCollection;
+use Carbon\Carbon;
 
 class TransaksiExport implements FromCollection, WithHeadings
 {
@@ -19,19 +21,42 @@ class TransaksiExport implements FromCollection, WithHeadings
 
    public function collection()
     {
-        $query = Transaksi::with(['barang','user'])
-            ->orderBy('created_at','desc');
+        // 1. Transactions
+        $transactions = Transaksi::with(['barang', 'user'])
+            ->when($this->from && $this->to, function ($q) {
+                $q->whereBetween('created_at', [
+                    $this->from . ' 00:00:00',
+                    $this->to . ' 23:59:59'
+                ]);
+            })
+            ->get();
 
-        if ($this->from && $this->to) {
-            $query->whereBetween('created_at', [
-                $this->from . ' 00:00:00',
-                $this->to . ' 23:59:59'
-            ]);
-        }
+        // 2. Returns (StockMovements)
+        $returns = StockMovement::with(['barang', 'user'])
+            ->where('type', 'return')
+            ->when($this->from && $this->to, function ($q) {
+                $q->whereBetween('created_at', [
+                    $this->from . ' 00:00:00',
+                    $this->to . ' 23:59:59'
+                ]);
+            })
+            ->get()
+            ->map(function ($item) {
+                $item->jenis = 'return';
+                $item->jumlah = $item->quantity;
+                return $item;
+            });
 
-        return $query->get()->map(function ($t) {
+        // 3. Merge and Sort
+        $merged = $transactions->concat($returns)->sortByDesc('created_at');
+
+        return $merged->map(function ($t) {
+            $date = $t->created_at instanceof Carbon
+                ? $t->created_at->setTimezone('Asia/Jakarta')
+                : Carbon::parse($t->created_at)->setTimezone('Asia/Jakarta');
+
             return [
-                'Tanggal'        => $t->created_at->format('d-m-Y H:i'),
+                'Tanggal'        => $date->format('d-m-Y H:i'),
                 'Barang'         => $t->barang->nama_barang ?? '-',
                 'Jenis'          => ucfirst($t->jenis),
                 'Jumlah'         => $t->jumlah,

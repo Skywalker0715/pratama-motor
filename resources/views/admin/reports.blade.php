@@ -96,6 +96,10 @@
                                     <span class="badge bg-primary">
                                         <i class="fas fa-cash-register me-1"></i>Terjual
                                     </span>
+                                @elseif($t->jenis == 'return')
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-undo me-1"></i>Return
+                                    </span>
                                 @else
                                     <span class="badge bg-info">
                                         <i class="fas fa-edit me-1"></i>Koreksi
@@ -128,7 +132,7 @@
     <div class="card-footer bg-light">
         <div class="row text-center g-0">
             {{-- TOTAL MASUK --}}
-            <div class="col-md-3 col-6">
+            <div class="col-md col-6">
                 <div class="p-3 border-end">
                     <i class="fas fa-arrow-down text-success fa-2x mb-2"></i>
                     <h6 class="mb-1 text-muted small">Total Masuk</h6>
@@ -139,7 +143,7 @@
             </div>
 
             {{-- TOTAL RUSAK --}}
-            <div class="col-md-3 col-6">
+            <div class="col-md col-6">
                 <div class="p-3 border-end">
                     <i class="fas fa-exclamation-triangle text-warning fa-2x mb-2"></i>
                     <h6 class="mb-1 text-muted small">Total Rusak</h6>
@@ -150,7 +154,7 @@
             </div>
 
             {{-- TOTAL HILANG --}}
-            <div class="col-md-3 col-6">
+            <div class="col-md col-6">
                 <div class="p-3 border-end">
                     <i class="fas fa-times-circle text-danger fa-2x mb-2"></i>
                     <h6 class="mb-1 text-muted small">Total Hilang</h6>
@@ -161,12 +165,23 @@
             </div>
 
             {{-- TOTAL TERJUAL --}}
-            <div class="col-md-3 col-6">
-                <div class="p-3">
+            <div class="col-md col-6">
+                <div class="p-3 border-end">
                     <i class="fas fa-cash-register text-primary fa-2x mb-2"></i>
                     <h6 class="mb-1 text-muted small">Total Terjual</h6>
                     <h4 class="fw-bold text-primary mb-0">
                         {{ $transaksis->where('jenis', 'penjualan')->sum('jumlah') }}
+                    </h4>
+                </div>
+            </div>
+
+            {{-- TOTAL RETURN --}}
+            <div class="col-md col-6">
+                <div class="p-3">
+                    <i class="fas fa-undo text-secondary fa-2x mb-2"></i>
+                    <h6 class="mb-1 text-muted small">Total Return</h6>
+                    <h4 class="fw-bold text-secondary mb-0">
+                        {{ $transaksis->where('jenis', 'return')->sum('jumlah') }}
                     </h4>
                 </div>
             </div>

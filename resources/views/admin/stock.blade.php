@@ -78,6 +78,7 @@
                         <th>NAMA BARANG</th>
                         <th width="120">JENIS</th>
                         <th width="100">JUMLAH</th>
+                        <th width="100">STOK SAAT INI</th>
                         <th width="150">PETUGAS</th>
                         <th width="180">TANGGAL</th>
                     </tr>
@@ -88,33 +89,38 @@
                             <td class="text-center">
                                  {{ $transaksis->firstItem() + $index }}
                             </td>
-                            <td class="text-center">{{ $transaksi->barang->nama_barang ?? '-' }}</td>
+                            <td class="text-center">{{ $transaksi->product_name ?? '-' }}</td>
                             <td class="text-center">
-                                @if($transaksi->jenis === 'masuk')
+                                @if($transaksi->type === 'masuk')
                                     <span class="badge bg-success">
                                         <i class="fas fa-arrow-down me-1"></i>Masuk
                                     </span>
-                                @elseif($transaksi->jenis === 'rusak')
+                                @elseif($transaksi->type === 'rusak')
                                     <span class="badge bg-danger">
                                         <i class="fas fa-times-circle me-1"></i>Rusak
                                     </span>
-                                @elseif($transaksi->jenis === 'hilang')
+                                @elseif($transaksi->type === 'hilang')
                                     <span class="badge bg-warning">
                                         <i class="fas fa-exclamation-triangle me-1"></i>Hilang
                                     </span>
-                                 @elseif($transaksi->jenis === 'penjualan')
+                                 @elseif($transaksi->type === 'penjualan')
                                  <span class="badge bg-primary">
                                       <i class="fas fa-cash-register me-1"></i>Terjual
                                   </span>
+                                @elseif(strtolower($transaksi->type) === 'return')
+                                    <span class="badge bg-secondary">
+                                        <i class="fas fa-undo me-1"></i>Return
+                                    </span>
                                 @else
                                     <span class="badge bg-info">
                                         <i class="fas fa-edit me-1"></i>Koreksi
                                     </span>
                                 @endif
                             </td>
-                            <td class="text-center fw-semibold">{{ $transaksi->jumlah }}</td>
-                            <td class="text-center">{{ $transaksi->user->name ?? '-' }}</td>
-                            <td class="text-center">{{ $transaksi->created_at->format('d-m-Y H:i') }}</td>
+                            <td class="text-center fw-semibold">{{ $transaksi->quantity }}</td>
+                            <td class="text-center fw-semibold">{{ $transaksi->current_stock }}</td>
+                            <td class="text-center">{{ $transaksi->user_name ?? '-' }}</td>
+                            <td class="text-center">{{ \Carbon\Carbon::parse($transaksi->date)->timezone('Asia/Jakarta')->format('d-m-Y H:i') }}</td>
                         </tr>
                     @empty
                         <tr>

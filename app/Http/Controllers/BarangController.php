@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\BarangImport;
 use App\Models\Transaksi;
+use Illuminate\Support\Facades\DB;
 
 class BarangController extends Controller
 {
@@ -74,9 +75,41 @@ class BarangController extends Controller
    public function stock()
    {
     $barangs = Barang::orderBy('nama_barang')->get();
+    
+    // 1. Transactions (IN, SOLD, DAMAGED, LOST, ADJUSTMENT)
+    $transactions = DB::table('transaksi')
+        ->join('barang', 'transaksi.barang_id', '=', 'barang.id')
+        ->join('users', 'transaksi.user_id', '=', 'users.id')
+        ->select(
+            'transaksi.id',
+            'transaksi.tanggal as date',
+            'barang.nama_barang as product_name',
+            'barang.stok as current_stock',
+            'transaksi.jenis as type',
+            'transaksi.jumlah as quantity',
+            'users.name as user_name',
+            DB::raw("'transaction' as source")
+        );
 
-    $transaksis = Transaksi::with(['barang','user'])
-        ->latest()
+    // 2. Stock Movements (RETURN only)
+    $movements = DB::table('stock_movements')
+        ->join('barang', 'stock_movements.barang_id', '=', 'barang.id')
+        ->join('users', 'stock_movements.user_id', '=', 'users.id')
+        ->whereIn('stock_movements.type', ['return', 'RETURN'])
+        ->select(
+            'stock_movements.id',
+            'stock_movements.created_at as date',
+            'barang.nama_barang as product_name',
+            'barang.stok as current_stock',
+            'stock_movements.type',
+            'stock_movements.quantity',
+            'users.name as user_name',
+            DB::raw("'movement' as source")
+        );
+
+    // Union and Paginate
+    $transaksis = $transactions->union($movements)
+        ->orderBy('date', 'desc')
         ->paginate(20);
 
     return view('admin.stock', compact('barangs', 'transaksis'));

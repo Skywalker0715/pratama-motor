@@ -74,10 +74,6 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
     Route::delete('/users/{user}', [UserController::class, 'destroy'])
         ->name('admin.users.destroy');
 
-    // Stock Movements
-    Route::get('/admin/stock-movement', [BarangController::class, 'stockMovement'])
-    ->name('admin.stock-movement.index');
-
     // Price History (ADMIN)
     Route::get('/price-history', [PriceController::class, 'history'])
     ->name('admin.price-history.index');
