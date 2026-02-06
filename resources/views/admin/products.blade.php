@@ -101,6 +101,13 @@
                                     <i class="fas fa-edit"></i>
                                 </button>
 
+                                <button class="btn btn-icon btn-info text-white"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#priceModal{{ $barang->id }}"
+                                    title="Ubah Harga">
+                                    <i class="fas fa-tag"></i>
+                                </button>
+
                                 <form action="{{ route('admin.products.destroy', $barang->id) }}"
                                     method="POST"
                                     class="delete-form">
@@ -139,6 +146,40 @@
                             </form>
                         </div>
                     </div>
+
+                    {{-- MODAL PRICE --}}
+                    <div class="modal fade" id="priceModal{{ $barang->id }}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <form action="{{ route('admin.products.price.update', $barang->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h6 class="modal-title">Ubah Harga</h6>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body text-start">
+                                        <div class="mb-3">
+                                            <label class="form-label">Harga Baru</label>
+                                            <input type="number" name="harga" class="form-control"
+                                                value="{{ $barang->harga }}" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Sumber</label>
+                                            <select name="source" class="form-select" required>
+                                                <option value="pratama_motor">Pratama Motor</option>
+                                                <option value="mandala">Mandala</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary btn-sm">Simpan</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                 @empty
                     <tr>
                         <td colspan="9" class="text-center text-muted py-4">
@@ -150,6 +191,7 @@
                 </tbody>
             </table>
         </div>
+
 
         {{-- PAGINATION --}}
         <div class="d-flex justify-content-end mt-3">

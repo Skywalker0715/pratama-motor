@@ -22,13 +22,6 @@
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Harga</label>
-        <input type="number" name="harga"
-            class="form-control form-control-sm"
-            value="{{ $barang->harga ?? '' }}" required>
-    </div>
-
-    <div class="col-md-6">
         <label class="form-label">Satuan</label>
         <input type="text" name="satuan"
             class="form-control form-control-sm"
@@ -41,5 +34,12 @@
             class="form-control form-control-sm"
             value="{{ $barang->lokasi_rak ?? '' }}">
     </div>
+
+    {{--<div class="col-md-6">
+        <label class="form-label">Harga</label>
+        <input type="number" name="harga"
+            class="form-control form-control-sm"
+            value="{{ $barang->harga ?? '' }}" required>
+    </div>  --}}
 
 </div>

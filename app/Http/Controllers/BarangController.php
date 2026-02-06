@@ -55,12 +55,11 @@ class BarangController extends Controller
             'kode_barang' => 'required|string|max:50|unique:barang,kode_barang,' . $barang->id,
             'nama_barang' => 'required|string|max:255',
             'kategori'    => 'required|string|max:100',
-            'harga'       => 'required|numeric|min:0',
             'satuan'      => 'required|string|max:20',
             'lokasi_rak'  => 'nullable|string|max:50',
         ]);
 
-        $barang->update($request->except('stok'));
+        $barang->update($request->except('stok','harga'));
 
         return redirect()->back()->with('success', 'Produk berhasil diupdate');
     }

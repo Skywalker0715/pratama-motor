@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="mb-4">
-    <h2 class="fw-bold text-dark">Laporan Penjualan</h2>
+    <h2 class="fw-bold text-dark">Laporan transaksi stok dan barang</h2>
     <p class="text-muted mb-0">Filter dan export laporan transaksi stok barang</p>
 </div>
 

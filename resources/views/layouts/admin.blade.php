@@ -28,7 +28,8 @@
             <li class="nav-item"><a href="{{ url('/admin/dashboard') }}" class="nav-link text-white"><i class="bi bi-speedometer2 me-2"></i> <span>Dashboard</span></a></li>
             <li class="nav-item"><a href="{{ url('/admin/products') }}" class="nav-link text-white"><i class="bi bi-box me-2"></i> <span>Produk</span></a></li>
             <li class="nav-item"><a href="{{ url('/admin/stock') }}" class="nav-link text-white"><i class="bi bi-archive me-2"></i> <span>Stok</span></a></li>
-            <li class="nav-item"><a href="{{ url('/admin/reports') }}" class="nav-link text-white"><i class="bi bi-file-earmark-text me-2"></i> <span>Laporan</span></a></li>
+            <li class="nav-item"><a href="{{ url('/admin/reports') }}" class="nav-link text-white"><i class="bi bi-file-earmark-text me-2"></i> <span>Laporan stok barang</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.price-history.index') }}" class="nav-link text-white"><i class="bi bi-clock-history me-2"></i> <span>Histori Perubahan Harga</span></a></li>
             <li class="nav-item"><a href="{{ url('/admin/users') }}" class="nav-link text-white"><i class="bi bi-people me-2"></i> <span>User</span></a></li>
         </ul>
     </aside>

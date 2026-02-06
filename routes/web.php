@@ -60,7 +60,7 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
     Route::get('/stock', [BarangController::class, 'stock'])->name('admin.stock');
     Route::post('/stock', [BarangController::class, 'updateStock'])->name('admin.stock.update');
     
-    //Laporan
+    //Laporan stok transaksi
     Route::get('/reports', [LaporanController::class, 'index'])
     ->name('admin.reports');
     Route::get('/reports/excel', [LaporanController::class, 'exportExcel'])
@@ -76,14 +76,19 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
 
     // Stock Movements
     Route::get('/admin/stock-movement', [BarangController::class, 'stockMovement'])
-    ->middleware(['auth', 'role:admin'])->name('admin.stock-movement.index');
+    ->name('admin.stock-movement.index');
 
-    // Price History
-     Route::get('/price-history', [PriceController::class, 'index'])->name('admin.price-history.index');
+    // Price History (ADMIN)
+    Route::get('/price-history', [PriceController::class, 'history'])
+    ->name('admin.price-history.index');
+
+    // Update harga (EVENT)
+     Route::put('/products/{barang}/price', [PriceController::class, 'update'])
+    ->name('admin.products.price.update');
 
     //Laporan Keuangan Laba dan Rugi
     Route::get('/admin/accounting/profit-loss', [LaporanController::class, 'profitLoss'])
-    ->middleware(['auth', 'role:admin'])->name('admin.accounting.profit-loss');
+    ->name('admin.accounting.profit-loss');
 
 
 });
