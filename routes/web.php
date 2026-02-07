@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\LaporanController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\ReturnController;
+use App\Http\Controllers\Admin\LaporanReturnController;
 
 
 Route::get('/', function () {
@@ -81,6 +82,16 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
     // Update harga (EVENT)
      Route::put('/products/{barang}/price', [PriceController::class, 'update'])
     ->name('admin.products.price.update');
+
+    //Laporan Return barang & stok
+    Route::get('/admin/laporan-return', [LaporanReturnController::class, 'index'])
+    ->name('admin.laporan-return');
+
+    Route::get('/admin/laporan-return/excel', [LaporanReturnController::class, 'exportExcel'])
+    ->name('admin.laporan-return.excel');
+
+    Route::get('/admin/laporan-return/pdf', [LaporanReturnController::class, 'exportPdf'])
+    ->name('admin.laporan-return.pdf');
 
     //Laporan Keuangan Laba dan Rugi
     Route::get('/admin/accounting/profit-loss', [LaporanController::class, 'profitLoss'])
