@@ -43,6 +43,11 @@ class Transaksi extends Model
         return $this->belongsTo(Barang::class);
     }
 
+    public function transaksiItems()
+    {
+        return $this->hasMany(Transaksi::class, 'transaksi_kode', 'transaksi_kode');
+    }
+
     public function getCreatedAtAttribute($value)
     {
     return Carbon::parse($value)->timezone('Asia/Jakarta');

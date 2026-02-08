@@ -12,6 +12,7 @@ use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\PriceController;
 use App\Http\Controllers\ReturnController;
 use App\Http\Controllers\Admin\LaporanReturnController;
+use App\Http\Controllers\Admin\AccountingController;
 
 
 Route::get('/', function () {
@@ -94,9 +95,14 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
     ->name('admin.laporan-return.pdf');
 
     //Laporan Keuangan Laba dan Rugi
-    Route::get('/admin/accounting/profit-loss', [LaporanController::class, 'profitLoss'])
-    ->name('admin.accounting.profit-loss');
+    Route::get('/accounting', [AccountingController::class, 'index'])
+        ->name('admin.accounting.index');
 
+    Route::get('/accounting/export/pdf', [AccountingController::class, 'exportPdf'])
+        ->name('admin.accounting.export.pdf');
+
+    Route::get('/accounting/export/excel', [AccountingController::class, 'exportExcel'])
+        ->name('admin.accounting.export.excel');
 
 });
 

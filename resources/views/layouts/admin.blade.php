@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <!-- Google Font: Inter (Primary) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
      <!-- Google Font: Poppins -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome CDN -->
@@ -30,6 +34,7 @@
             <li class="nav-item"><a href="{{ url('/admin/stock') }}" class="nav-link text-white"><i class="bi bi-archive me-2"></i> <span>Stok</span></a></li>
             <li class="nav-item"><a href="{{ url('/admin/reports') }}" class="nav-link text-white"><i class="bi bi-file-earmark-text me-2"></i> <span>Laporan stok barang</span></a></li>
             <li class="nav-item"><a href="{{ route('admin.laporan-return') }}" class="nav-link text-white"><i class="bi bi-arrow-counterclockwise me-2"></i><span>Laporan Return Barang</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.accounting.index') }}" class="nav-link text-white"><i class="bi bi-cash-stack me-2"></i> Laporan Laba Rugi</a></li>
             <li class="nav-item"><a href="{{ route('admin.price-history.index') }}" class="nav-link text-white"><i class="bi bi-clock-history me-2"></i> <span>Histori Perubahan Harga</span></a></li>
             <li class="nav-item"><a href="{{ url('/admin/users') }}" class="nav-link text-white"><i class="bi bi-people me-2"></i> <span>User</span></a></li>
         </ul>

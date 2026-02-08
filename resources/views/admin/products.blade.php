@@ -101,11 +101,11 @@
                                     <i class="fas fa-edit"></i>
                                 </button>
 
-                                <button class="btn btn-icon btn-info text-white"
+                              <button class="btn btn-icon btn-success"
                                     data-bs-toggle="modal"
                                     data-bs-target="#priceModal{{ $barang->id }}"
                                     title="Ubah Harga">
-                                    <i class="fas fa-tag"></i>
+                                    <i class="fas fa-dollar-sign"></i>
                                 </button>
 
                                 <form action="{{ route('admin.products.destroy', $barang->id) }}"
