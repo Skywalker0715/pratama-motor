@@ -17,7 +17,8 @@
     <thead>
         <tr>
             <th>Tanggal</th>
-            <th>Barang</th>
+            <th>Kode Barang</th>
+            <th>Nama Barang</th>
             <th>Jenis</th>
             <th>Jumlah</th>
             <th>Stok Saat Ini</th>
@@ -28,6 +29,7 @@
         @foreach($transaksis as $t)
         <tr>
             <td>{{ $t->created_at->format('d-m-Y H:i') }}</td>
+            <td>{{ $t->barang->kode_barang ?? '-' }}</td>
             <td>{{ $t->barang->nama_barang }}</td>
             <td>{{ ucfirst($t->jenis) }}</td>
             <td>{{ $t->jumlah }}</td>

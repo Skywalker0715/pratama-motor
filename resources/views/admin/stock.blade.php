@@ -12,7 +12,7 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header">
         <h5 class="mb-0 fw-semibold">
-            <i class="fas fa-box-open me-2"></i>Form Transaksi Stok
+            <i class="bi bi-box-seam me-2"></i>Form Transaksi Stok
         </h5>
     </div>
     <div class="card-body">
@@ -21,7 +21,7 @@
 
             <div class="col-md-4">
                 <label class="form-label fw-semibold">
-                    <i class="fas fa-cube me-1 text-primary"></i>Produk
+                    <i class="bi bi-box me-1 text-primary"></i>Produk
                 </label>
                   <select name="barang_id" class="form-select select-barang" required>
                          <option value="">-- Cari & Pilih Produk --</option>
@@ -35,14 +35,14 @@
 
             <div class="col-md-3">
                 <label class="form-label fw-semibold">
-                    <i class="fas fa-sort-numeric-up me-1 text-primary"></i>Jumlah
+                    <i class="bi bi-123 me-1 text-primary"></i>Jumlah
                 </label>
                 <input type="number" name="jumlah" min="1" class="form-control" placeholder="0" required>
             </div>
 
             <div class="col-md-3">
                 <label class="form-label fw-semibold">
-                    <i class="fas fa-exchange-alt me-1 text-primary"></i>Jenis Transaksi
+                    <i class="bi bi-arrow-left-right me-1 text-primary"></i>Jenis Transaksi
                 </label>
                 <select name="jenis" class="form-select" required>
                     <option value="masuk">Masuk</option>
@@ -54,7 +54,7 @@
 
             <div class="col-md-2 d-flex align-items-end">
                 <button type="submit" class="btn btn-primary w-100 btn-submit">
-                    <i class="fas fa-save me-2"></i>Simpan
+                    <i class="bi bi-save me-2"></i>Simpan
                 </button>
             </div>
         </form>
@@ -65,7 +65,7 @@
 <div class="card shadow-sm">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-semibold">
-            <i class="fas fa-history me-2"></i>Riwayat Stok
+            <i class="bi bi-clock-history me-2"></i>Riwayat Stok
         </h5>
         <span class="badge bg-light text-dark">Total: {{ $transaksis->count() }} transaksi</span>
     </div>
@@ -75,6 +75,7 @@
                 <thead class="table-light text-center">
                     <tr>
                         <th width="50">NO</th>
+                        <th>KODE BARANG</th>
                         <th>NAMA BARANG</th>
                         <th width="120">JENIS</th>
                         <th width="100">JUMLAH</th>
@@ -89,31 +90,32 @@
                             <td class="text-center">
                                  {{ $transaksis->firstItem() + $index }}
                             </td>
+                            <td class="text-center">{{ $transaksi->kode_barang ?? '-' }}</td>
                             <td class="text-center">{{ $transaksi->product_name ?? '-' }}</td>
                             <td class="text-center">
                                 @if($transaksi->type === 'masuk')
                                     <span class="badge bg-success">
-                                        <i class="fas fa-arrow-down me-1"></i>Masuk
+                                        <i class="bi bi-arrow-down-circle me-1"></i>Masuk
                                     </span>
                                 @elseif($transaksi->type === 'rusak')
                                     <span class="badge bg-danger">
-                                        <i class="fas fa-times-circle me-1"></i>Rusak
+                                        <i class="bi bi-x-circle me-1"></i>Rusak
                                     </span>
                                 @elseif($transaksi->type === 'hilang')
                                     <span class="badge bg-warning">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>Hilang
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Hilang
                                     </span>
-                                 @elseif($transaksi->type === 'penjualan')
-                                 <span class="badge bg-primary">
-                                      <i class="fas fa-cash-register me-1"></i>Terjual
-                                  </span>
+                                @elseif($transaksi->type === 'penjualan')
+                                    <span class="badge bg-primary">
+                                        <i class="bi bi-cash-coin me-1"></i>Terjual
+                                    </span>
                                 @elseif(strtolower($transaksi->type) === 'return')
                                     <span class="badge bg-secondary">
-                                        <i class="fas fa-undo me-1"></i>Return
+                                        <i class="bi bi-arrow-counterclockwise me-1"></i>Return
                                     </span>
                                 @else
                                     <span class="badge bg-info">
-                                        <i class="fas fa-edit me-1"></i>Koreksi
+                                        <i class="bi bi-pencil me-1"></i>Koreksi
                                     </span>
                                 @endif
                             </td>
@@ -124,8 +126,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
-                                <i class="fas fa-inbox fa-3x mb-3 d-block text-secondary"></i>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem; color: #6c757d;"></i>
                                 Belum ada riwayat stok
                             </td>
                         </tr>

@@ -42,7 +42,7 @@ class AccountingExport implements FromCollection, WithHeadings, WithMapping, Wit
     {
         return [
             $transaksi->created_at->format('d/m/Y H:i'),
-            $transaksi->kode_transaksi,
+            $transaksi->transaksi_kode,
             $transaksi->total_sales,
             $transaksi->total_hpp,
             $transaksi->profit,

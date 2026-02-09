@@ -12,28 +12,28 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header">
         <h5 class="mb-0 fw-semibold">
-            <i class="fas fa-filter me-2"></i>Filter Laporan
+            <i class="bi bi-funnel me-2"></i>Filter Laporan
         </h5>
     </div>
     <div class="card-body">
         <form method="GET" action="{{ route('admin.reports') }}" class="row g-3 align-items-end">
             <div class="col-md-3">
                 <label class="form-label fw-semibold">
-                    <i class="fas fa-calendar-alt me-1 text-primary"></i>Tanggal Dari
+                    <i class="bi bi-calendar-event me-1 text-primary"></i>Tanggal Dari
                 </label>
                 <input type="date" name="from" class="form-control" value="{{ request('from') }}">
             </div>
 
             <div class="col-md-3">
                 <label class="form-label fw-semibold">
-                    <i class="fas fa-calendar-check me-1 text-primary"></i>Tanggal Sampai
+                    <i class="bi bi-calendar-check me-1 text-primary"></i>Tanggal Sampai
                 </label>
                 <input type="date" name="to" class="form-control" value="{{ request('to') }}">
             </div>
 
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-2"></i>Filter
+                    <i class="bi bi-search me-2"></i>Filter
                 </button>
             </div>
 
@@ -41,11 +41,11 @@
                 <div class="btn-group" role="group">
                    <a href="{{ route('admin.reports.excel', request()->query()) }}"
                             class="btn btn-success">
-                               <i class="fas fa-file-excel me-2"></i>Export Excel
+                               <i class="bi bi-file-earmark-excel me-2"></i>Export Excel
                              </a>
                             <a href="{{ route('admin.reports.pdf', request()->query()) }}"
                                      class="btn btn-danger">
-                             <i class="fas fa-file-pdf me-2"></i>Export PDF
+                             <i class="bi bi-file-earmark-pdf me-2"></i>Export PDF
                       </a>
                 </div>
             </div>
@@ -57,7 +57,7 @@
 <div class="card shadow-sm">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-semibold">
-            <i class="fas fa-chart-line me-2"></i>Data Laporan
+            <i class="bi bi-graph-up me-2"></i>Data Laporan
         </h5>
         <span class="badge bg-light text-dark">Total: {{ $transaksis->total() }} transaksi</span>
     </div>
@@ -67,6 +67,7 @@
                 <thead class="table-light text-center">
                     <tr>
                         <th width="180">TANGGAL</th>
+                        <th>KODE BARANG</th>
                         <th>NAMA BARANG</th>
                         <th width="120">JENIS</th>
                         <th width="100">JUMLAH</th>
@@ -78,31 +79,32 @@
                     @forelse($transaksis as $t)
                         <tr>
                             <td class="text-center">{{ $t->created_at->format('d-m-Y H:i') }}</td>
-                            <td class="text-center">{{ $t->barang->nama_barang }}</td>
+                            <td class="text-center">{{ $t->barang->kode_barang ?? '-' }}</td>
+                            <td class="text-center">{{ $t->barang->nama_barang ?? '-' }}</td>
                             <td class="text-center">
                                 @if($t->jenis == 'masuk')
                                     <span class="badge bg-success">
-                                        <i class="fas fa-arrow-down me-1"></i>Masuk
+                                        <i class="bi bi-arrow-down-circle me-1"></i>Masuk
                                     </span>
                                 @elseif($t->jenis == 'rusak')
                                     <span class="badge bg-warning text-dark">
-                                        <i class="fas fa-exclamation-triangle me-1"></i>Rusak
+                                        <i class="bi bi-exclamation-triangle me-1"></i>Rusak
                                     </span>
                                 @elseif($t->jenis == 'hilang')
                                     <span class="badge bg-danger">
-                                        <i class="fas fa-times-circle me-1"></i>Hilang
+                                        <i class="bi bi-x-circle me-1"></i>Hilang
                                     </span>
                                 @elseif($t->jenis == 'penjualan')
                                     <span class="badge bg-primary">
-                                        <i class="fas fa-cash-register me-1"></i>Terjual
+                                        <i class="bi bi-cash-coin me-1"></i>Terjual
                                     </span>
                                 @elseif($t->jenis == 'return')
                                     <span class="badge bg-secondary">
-                                        <i class="fas fa-undo me-1"></i>Return
+                                        <i class="bi bi-arrow-counterclockwise me-1"></i>Return
                                     </span>
                                 @else
                                     <span class="badge bg-info">
-                                        <i class="fas fa-edit me-1"></i>Koreksi
+                                        <i class="bi bi-pencil me-1"></i>Koreksi
                                     </span>
                                 @endif
                             </td>
@@ -117,7 +119,7 @@
                     @empty
                         <tr>
                             <td colspan="6" class="text-center text-muted py-4">
-                                <i class="fas fa-inbox fa-3x mb-3 d-block text-secondary"></i>
+                                <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem; color: #6c757d;"></i>
                                 Tidak ada data laporan
                             </td>
                         </tr>
@@ -134,7 +136,7 @@
             {{-- TOTAL MASUK --}}
             <div class="col-md col-6">
                 <div class="p-3 border-end">
-                    <i class="fas fa-arrow-down text-success fa-2x mb-2"></i>
+                    <i class="bi bi-arrow-down-circle text-success" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Masuk</h6>
                     <h4 class="fw-bold text-success mb-0">
                         {{ $transaksis->where('jenis', 'masuk')->sum('jumlah') }}
@@ -145,7 +147,7 @@
             {{-- TOTAL RUSAK --}}
             <div class="col-md col-6">
                 <div class="p-3 border-end">
-                    <i class="fas fa-exclamation-triangle text-warning fa-2x mb-2"></i>
+                    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Rusak</h6>
                     <h4 class="fw-bold text-warning mb-0">
                         {{ $transaksis->where('jenis', 'rusak')->sum('jumlah') }}
@@ -156,7 +158,7 @@
             {{-- TOTAL HILANG --}}
             <div class="col-md col-6">
                 <div class="p-3 border-end">
-                    <i class="fas fa-times-circle text-danger fa-2x mb-2"></i>
+                    <i class="bi bi-x-circle text-danger" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Hilang</h6>
                     <h4 class="fw-bold text-danger mb-0">
                         {{ $transaksis->where('jenis', 'hilang')->sum('jumlah') }}
@@ -167,7 +169,7 @@
             {{-- TOTAL TERJUAL --}}
             <div class="col-md col-6">
                 <div class="p-3 border-end">
-                    <i class="fas fa-cash-register text-primary fa-2x mb-2"></i>
+                    <i class="bi bi-cash-coin text-primary" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Terjual</h6>
                     <h4 class="fw-bold text-primary mb-0">
                         {{ $transaksis->where('jenis', 'penjualan')->sum('jumlah') }}
@@ -178,7 +180,7 @@
             {{-- TOTAL RETURN --}}
             <div class="col-md col-6">
                 <div class="p-3">
-                    <i class="fas fa-undo text-secondary fa-2x mb-2"></i>
+                    <i class="bi bi-arrow-counterclockwise text-secondary" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Return</h6>
                     <h4 class="fw-bold text-secondary mb-0">
                         {{ $transaksis->where('jenis', 'return')->sum('jumlah') }}

@@ -11,7 +11,7 @@
             data-bs-toggle="modal"
             data-bs-target="#addModal"
             title="Tambah Produk">
-            <i class="fas fa-plus"></i>
+            <i class="bi bi-plus-lg"></i>
         </button>
     </div>
 
@@ -34,7 +34,7 @@
                     </select>
 
                     <button class="btn btn-secondary btn-icon" type="submit" title="Cari">
-                        <i class="fas fa-search"></i>
+                        <i class="bi bi-search"></i>
                     </button>
                 </form>
             </div>
@@ -53,7 +53,7 @@
                         class="btn btn-success btn-icon"
                         onclick="document.getElementById('importFile').click()"
                         title="Import Excel">
-                        <i class="fas fa-file-excel"></i>
+                        <i class="bi bi-file-earmark-excel"></i>
                     </button>
                 </form>
             </div>
@@ -98,15 +98,15 @@
                                     data-bs-toggle="modal"
                                     data-bs-target="#editModal{{ $barang->id }}"
                                     title="Edit">
-                                    <i class="fas fa-edit"></i>
+                                    <i class="bi bi-pencil"></i>
                                 </button>
 
-                              <button class="btn btn-icon btn-success"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#priceModal{{ $barang->id }}"
-                                    title="Ubah Harga">
-                                    <i class="fas fa-dollar-sign"></i>
-                                </button>
+                             <button class="btn btn-icon btn-success"
+                                     data-bs-toggle="modal"
+                                     data-bs-target="#priceModal{{ $barang->id }}"
+                                     title="Ubah Harga">
+                                    <i class="bi bi-currency-dollar"></i>
+                             </button>
 
                                 <form action="{{ route('admin.products.destroy', $barang->id) }}"
                                     method="POST"
@@ -117,7 +117,7 @@
                                     class="btn btn-icon btn-danger delete-btn"
                                     data-action="{{ route('admin.products.destroy', $barang->id) }}"
                                     title="Hapus">
-                                   <i class="fas fa-trash-alt"></i>
+                                   <i class="bi bi-trash"></i>
                                </button>
                                 </form>
                             </div>
@@ -183,7 +183,7 @@
                 @empty
                     <tr>
                         <td colspan="9" class="text-center text-muted py-4">
-                            <i class="fas fa-inbox fa-3x mb-3 d-block text-secondary"></i>
+                            <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem; color: #6c757d;"></i>
                             Data produk kosong
                         </td>
                     </tr>
@@ -228,7 +228,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h6 class="modal-title text-white">
-                    <i class="fas fa-trash-alt"></i> Konfirmasi Hapus
+                    <i class="bi bi-trash"></i> Konfirmasi Hapus
                 </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>

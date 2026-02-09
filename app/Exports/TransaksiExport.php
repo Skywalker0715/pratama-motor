@@ -57,6 +57,7 @@ class TransaksiExport implements FromCollection, WithHeadings
 
             return [
                 'Tanggal'        => $date->format('d-m-Y H:i'),
+                'Kode Barang'    => $t->barang->kode_barang ?? '-',
                 'Barang'         => $t->barang->nama_barang ?? '-',
                 'Jenis'          => ucfirst($t->jenis),
                 'Jumlah'         => $t->jumlah,
@@ -70,6 +71,7 @@ class TransaksiExport implements FromCollection, WithHeadings
     {
         return [
             'Tanggal',
+            'Kode Barang',
             'Barang',
             'Jenis',
             'Jumlah',

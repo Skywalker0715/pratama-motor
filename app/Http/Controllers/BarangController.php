@@ -83,6 +83,7 @@ class BarangController extends Controller
         ->select(
             'transaksi.id',
             'transaksi.tanggal as date',
+            'barang.kode_barang',
             'barang.nama_barang as product_name',
             'barang.stok as current_stock',
             'transaksi.jenis as type',
@@ -99,6 +100,7 @@ class BarangController extends Controller
         ->select(
             'stock_movements.id',
             'stock_movements.created_at as date',
+            'barang.kode_barang',
             'barang.nama_barang as product_name',
             'barang.stok as current_stock',
             'stock_movements.type',

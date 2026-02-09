@@ -56,35 +56,39 @@
         </div>
     </header>
 
-    <aside class="fixed top-16 left-0 h-full w-64 bg-white shadow transition-transform duration-300 z-10"
-           :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
+    <aside class="fixed top-16 left-0 h-full bg-white shadow transition-all duration-300 z-10"
+           :class="sidebarOpen ? 'w-64' : 'w-20'">
         <nav class="p-4 space-y-2">
             <a href="{{ route('user.dashboard') }}"
-               class="flex items-center gap-3 px-4 py-2 rounded {{ request()->routeIs('user.dashboard') ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100' }}">
-                <span class="material-icons text-gray-600">dashboard</span>
-                Dashboard
+               class="flex items-center py-2 rounded transition-all duration-300 {{ request()->routeIs('user.dashboard') ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100' }}"
+               :class="sidebarOpen ? 'px-4 gap-3 justify-start' : 'px-2 justify-center'">
+                <i class="material-icons menu-icon text-gray-600 shrink-0">dashboard</i>
+                <span class="menu-text" x-show="sidebarOpen" style="white-space: nowrap;">Dashboard</span>
             </a>
 
             <a href="{{ route('user.transaksi') }}"
-               class="flex items-center gap-3 px-4 py-2 rounded {{ request()->routeIs('user.transaksi') ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100' }}">
-                <span class="material-icons text-gray-600">point_of_sale</span>
-                Transaksi
+               class="flex items-center py-2 rounded transition-all duration-300 {{ request()->routeIs('user.transaksi') ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100' }}"
+               :class="sidebarOpen ? 'px-4 gap-3 justify-start' : 'px-2 justify-center'">
+                <i class="material-icons menu-icon text-gray-600 shrink-0">point_of_sale</i>
+                <span class="menu-text" x-show="sidebarOpen" style="white-space: nowrap;">Transaksi</span>
             </a>
 
             <a href="{{ route('user.history') }}"
-               class="flex items-center gap-3 px-4 py-2 rounded {{ request()->routeIs('user.history') ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100' }}">
-                <span class="material-icons text-gray-600">history</span>
-                Riwayat
+               class="flex items-center py-2 rounded transition-all duration-300 {{ request()->routeIs('user.history') ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100' }}"
+               :class="sidebarOpen ? 'px-4 gap-3 justify-start' : 'px-2 justify-center'">
+                <i class="material-icons menu-icon text-gray-600 shrink-0">history</i>
+                <span class="menu-text" x-show="sidebarOpen" style="white-space: nowrap;">Riwayat</span>
             </a>
               <a href="{{ route('user.return.index') }}"
-           class="flex items-center gap-3 px-4 py-2 rounded {{ request()->routeIs('user.return.*') ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100' }}">
-            <span class="material-icons text-gray-600">keyboard_return</span>
-            Return Barang
+           class="flex items-center py-2 rounded transition-all duration-300 {{ request()->routeIs('user.return.*') ? 'bg-gray-200 font-semibold' : 'hover:bg-gray-100' }}"
+           :class="sidebarOpen ? 'px-4 gap-3 justify-start' : 'px-2 justify-center'">
+            <i class="material-icons menu-icon text-gray-600 shrink-0">keyboard_return</i>
+            <span class="menu-text" x-show="sidebarOpen" style="white-space: nowrap;">Return Barang</span>
         </a>
         </nav>
     </aside>
 
-    <main class="pt-20 p-4 transition-all duration-300" :class="sidebarOpen ? 'ml-64' : 'ml-0'">
+    <main class="pt-20 p-4 transition-all duration-300" :class="sidebarOpen ? 'ml-64' : 'ml-20'">
         @yield('content')
     </main>
 

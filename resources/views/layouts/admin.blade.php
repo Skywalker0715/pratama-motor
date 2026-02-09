@@ -7,11 +7,13 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     <!-- Notyf -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <!-- google icon -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <!-- Google Font: Inter (Primary) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,14 +31,14 @@
     <aside id="admin-sidebar" class="bg-dark text-white p-3">
         <h5 class="mb-4 sidebar-title">Pratama Motor</h5>
         <ul class="nav flex-column gap-2">
-            <li class="nav-item"><a href="{{ url('/admin/dashboard') }}" class="nav-link text-white"><i class="bi bi-speedometer2 me-2"></i> <span>Dashboard</span></a></li>
-            <li class="nav-item"><a href="{{ url('/admin/products') }}" class="nav-link text-white"><i class="bi bi-box me-2"></i> <span>Produk</span></a></li>
-            <li class="nav-item"><a href="{{ url('/admin/stock') }}" class="nav-link text-white"><i class="bi bi-archive me-2"></i> <span>Stok</span></a></li>
-            <li class="nav-item"><a href="{{ url('/admin/reports') }}" class="nav-link text-white"><i class="bi bi-file-earmark-text me-2"></i> <span>Laporan stok barang</span></a></li>
-            <li class="nav-item"><a href="{{ route('admin.laporan-return') }}" class="nav-link text-white"><i class="bi bi-arrow-counterclockwise me-2"></i><span>Laporan Return Barang</span></a></li>
-            <li class="nav-item"><a href="{{ route('admin.accounting.index') }}" class="nav-link text-white"><i class="bi bi-cash-stack me-2"></i> Laporan Laba Rugi</a></li>
-            <li class="nav-item"><a href="{{ route('admin.price-history.index') }}" class="nav-link text-white"><i class="bi bi-clock-history me-2"></i> <span>Histori Perubahan Harga</span></a></li>
-            <li class="nav-item"><a href="{{ url('/admin/users') }}" class="nav-link text-white"><i class="bi bi-people me-2"></i> <span>User</span></a></li>
+            <li class="nav-item"><a href="{{ url('/admin/dashboard') }}" class="nav-link text-white text-nowrap"><i class="bi bi-speedometer2 menu-icon me-2"></i> <span class="menu-text">Dashboard</span></a></li>
+            <li class="nav-item"><a href="{{ url('/admin/products') }}" class="nav-link text-white text-nowrap"><i class="bi bi-box menu-icon me-2"></i> <span class="menu-text">Produk</span></a></li>
+            <li class="nav-item"><a href="{{ url('/admin/stock') }}" class="nav-link text-white text-nowrap"><i class="bi bi-archive menu-icon me-2"></i> <span class="menu-text">Stok</span></a></li>
+            <li class="nav-item"><a href="{{ url('/admin/reports') }}" class="nav-link text-white text-nowrap"><i class="bi bi-file-earmark-text menu-icon me-2"></i> <span class="menu-text">Laporan stok barang</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.laporan-return') }}" class="nav-link text-white text-nowrap"><i class="bi bi-arrow-counterclockwise menu-icon me-2"></i> <span class="menu-text">Laporan Return Barang</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.accounting.index') }}" class="nav-link text-white text-nowrap"><i class="bi bi-cash-stack menu-icon me-2"></i> <span class="menu-text">Laporan Penjualan</span></a></li>
+            <li class="nav-item"><a href="{{ route('admin.price-history.index') }}" class="nav-link text-white text-nowrap"><i class="bi bi-clock-history menu-icon me-2"></i> <span class="menu-text">Histori Perubahan Harga</span></a></li>
+            <li class="nav-item"><a href="{{ url('/admin/users') }}" class="nav-link text-white text-nowrap"><i class="bi bi-people menu-icon me-2"></i> <span class="menu-text">User</span></a></li>
         </ul>
     </aside>
 

@@ -11,7 +11,7 @@
 <div class="card shadow-sm">
     <div class="card-header">
         <h5 class="mb-0 fw-semibold">
-            <i class="fas fa-users me-2"></i>Data User
+            <i class="bi bi-people me-2"></i>Data User
         </h5>
     </div>
     
@@ -39,17 +39,17 @@
                             <td class="text-center">
                                 @if($user->role === 'admin')
                                     <span class="badge bg-primary">
-                                        <i class="fas fa-user-shield me-1"></i>Admin
+                                        <i class="bi bi-shield-check me-1"></i>Admin
                                     </span>
                                 @else
                                     <span class="badge bg-secondary">
-                                        <i class="fas fa-user me-1"></i>{{ ucfirst($user->role) }}
+                                        <i class="bi bi-person me-1"></i>{{ ucfirst($user->role) }}
                                     </span>
                                 @endif
                             </td>
                             <td class="text-center">
                                 <span class="badge bg-success">
-                                    <i class="fas fa-check-circle me-1"></i>Aktif
+                                    <i class="bi bi-check-circle me-1"></i>Aktif
                                 </span>
                             </td>
                             <td class="text-center">
@@ -58,7 +58,7 @@
                              class="btn btn-icon btn-danger delete-btn"
                              data-action="{{ route('admin.users.destroy', $user->id) }}"
                              title="Hapus User">
-                            <i class="fas fa-trash-alt"></i>
+                            <i class="bi bi-trash"></i>
                          </button>
                         </form>
                             </td>
@@ -76,7 +76,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h6 class="modal-title text-white">
-                    <i class="fas fa-trash-alt"></i> Konfirmasi Hapus
+                    <i class="bi bi-trash"></i> Konfirmasi Hapus
                 </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
