@@ -40,7 +40,7 @@ class Transaksi extends Model
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class);
+        return $this->belongsTo(Barang::class)->withoutGlobalScope('active');
     }
 
 

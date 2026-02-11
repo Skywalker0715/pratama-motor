@@ -16,7 +16,7 @@ class ReturnItem extends Model
 
      public function barang()
     {
-        return $this->belongsTo(Barang::class, 'barang_id');
+        return $this->belongsTo(Barang::class, 'barang_id')->withoutGlobalScope('active');
     }
 
     public function return()

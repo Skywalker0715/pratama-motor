@@ -50,8 +50,10 @@ class BarangController extends Controller
     }
 
     
-    public function update(Request $request, Barang $barang)
+    public function update(Request $request, $id)
     {
+        $barang = Barang::withoutGlobalScopes()->findOrFail($id);
+
         $request->validate([
             'kode_barang' => 'required|string|max:50|unique:barang,kode_barang,' . $barang->id,
             'nama_barang' => 'required|string|max:255',
@@ -65,16 +67,17 @@ class BarangController extends Controller
         return redirect()->back()->with('success', 'Produk berhasil diupdate');
     }
 
-    public function destroy(Barang $barang)
+    public function destroy($id)
     {
-        $barang->delete();
-        return redirect()->back()->with('success', 'Produk berhasil dihapus');
+        $barang = Barang::withoutGlobalScopes()->findOrFail($id);
+        $barang->update(['is_active' => false]);
+        return redirect()->back()->with('success', 'Produk berhasil dinonaktifkan');
     }
 
      
    public function stock()
    {
-    $barangs = Barang::orderBy('nama_barang')->get();
+    $barangs = Barang::withoutGlobalScopes()->orderBy('nama_barang')->get();
     
     // 1. Transactions (IN, SOLD, DAMAGED, LOST, ADJUSTMENT)
     $transactions = DB::table('transaksi')
@@ -125,7 +128,7 @@ class BarangController extends Controller
     'jenis'     => 'required|in:masuk,rusak,hilang,koreksi',
     ]);
 
-     $barang = Barang::findOrFail($request->barang_id);
+     $barang = Barang::withoutGlobalScopes()->findOrFail($request->barang_id);
 
      if ($request->jenis === 'masuk') {
      $barang->stok += $request->jumlah;

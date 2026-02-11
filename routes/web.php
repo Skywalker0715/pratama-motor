@@ -75,6 +75,8 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
         ->name('admin.users');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])
         ->name('admin.users.destroy');
+    Route::patch('/users/{user}/activate', [UserController::class, 'activate'])
+        ->name('admin.users.activate');
 
     // Price History (ADMIN)
     Route::get('/price-history', [PriceController::class, 'history'])
@@ -106,7 +108,7 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
 
 });
 
-Route::middleware(['auth', 'role:user', 'prevent-back-history'])->prefix('user')->group(function () {
+Route::middleware(['auth', 'active', 'role:user', 'prevent-back-history'])->prefix('user')->group(function () {
     Route::get('/dashboard', [UserDashboardController::class, 'index'])
             ->name('user.dashboard');
     Route::get('/transaksi', fn () => view('user.transaksi'))->name('user.transaksi');

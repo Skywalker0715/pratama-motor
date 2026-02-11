@@ -14,8 +14,16 @@
             <i class="bi bi-people me-2"></i>Data User
         </h5>
     </div>
-    
+
     <div class="card-body p-0">
+        <div class="mb-3 px-3 pt-3">
+            <a href="{{ route('admin.users', ['status' => 'active']) }}" class="btn {{ $status == 'active' ? 'btn-primary' : 'btn-outline-primary' }} me-2">
+                Active Users
+            </a>
+            <a href="{{ route('admin.users', ['status' => 'inactive']) }}" class="btn {{ $status == 'inactive' ? 'btn-secondary' : 'btn-outline-secondary' }}">
+                Inactive Users
+            </a>
+        </div>
         <div class="table-responsive">
             <table class="table table-hover table-bordered align-middle small mb-0">
                 <thead class="table-light text-center">
@@ -48,19 +56,36 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-success">
-                                    <i class="bi bi-check-circle me-1"></i>Aktif
-                                </span>
+                                @if($user->is_active)
+                                    <span class="badge bg-success">
+                                        <i class="bi bi-check-circle me-1"></i>Aktif
+                                    </span>
+                                @else
+                                    <span class="badge bg-danger">
+                                        <i class="bi bi-x-circle me-1"></i>Tidak Aktif
+                                    </span>
+                                @endif
                             </td>
                             <td class="text-center">
-                            <form class="delete-form">
-                             <button type="button"
-                             class="btn btn-icon btn-danger delete-btn"
-                             data-action="{{ route('admin.users.destroy', $user->id) }}"
-                             title="Hapus User">
-                            <i class="bi bi-trash"></i>
-                         </button>
-                        </form>
+                                @if(!$user->is_active)
+                                    <form method="POST" action="{{ route('admin.users.activate', $user->id) }}" style="display: inline;">
+                                        @csrf
+                                        @method('PATCH')
+                                        <button type="submit"
+                                            class="btn btn-icon btn-success"
+                                            title="Aktifkan User">
+                                            <i class="bi bi-person-check"></i>
+                                        </button>
+                                    </form>
+                                @endif
+                                <form class="delete-form" style="display: inline;">
+                                     <button type="button"
+                                         class="btn btn-icon btn-danger delete-btn"
+                                         data-action="{{ route('admin.users.destroy', $user->id) }}"
+                                         title="Hapus User">
+                                         <i class="bi bi-trash"></i>
+                                     </button>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
@@ -75,14 +100,14 @@
     <div class="modal-dialog modal-dialog-centered modal-sm">
         <div class="modal-content">
             <div class="modal-header">
-                <h6 class="modal-title text-white">
-                    <i class="bi bi-trash"></i> Konfirmasi Hapus
+                <h6 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>Konfirmasi Hapus Permanen
                 </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body text-center">
-                <p class="mb-0">Yakin ingin menghapus user ini?</p>
+                <p class="mb-0">Yakin ingin menonaktifkan user ini? User tidak akan bisa login kembali, namun semua data historis akan tetap utuh.</p>
             </div>
 
             <div class="modal-footer justify-content-center">
@@ -90,7 +115,7 @@
                     Batal
                 </button>
                 <button class="btn btn-sm btn-danger" id="confirmDeleteBtn">
-                    Hapus
+                    Ya, Hapus Permanen
                 </button>
             </div>
         </div>

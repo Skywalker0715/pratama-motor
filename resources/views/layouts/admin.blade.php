@@ -34,7 +34,7 @@
             <li class="nav-item"><a href="{{ url('/admin/dashboard') }}" class="nav-link text-white text-nowrap"><i class="bi bi-speedometer2 menu-icon me-2"></i> <span class="menu-text">Dashboard</span></a></li>
             <li class="nav-item"><a href="{{ url('/admin/products') }}" class="nav-link text-white text-nowrap"><i class="bi bi-box menu-icon me-2"></i> <span class="menu-text">Produk</span></a></li>
             <li class="nav-item"><a href="{{ url('/admin/stock') }}" class="nav-link text-white text-nowrap"><i class="bi bi-archive menu-icon me-2"></i> <span class="menu-text">Stok</span></a></li>
-            <li class="nav-item"><a href="{{ url('/admin/reports') }}" class="nav-link text-white text-nowrap"><i class="bi bi-file-earmark-text menu-icon me-2"></i> <span class="menu-text">Laporan stok barang</span></a></li>
+            <li class="nav-item"><a href="{{ url('/admin/reports') }}" class="nav-link text-white text-nowrap"><i class="bi bi-file-earmark-text menu-icon me-2"></i> <span class="menu-text">Laporan Stok Barang</span></a></li>
             <li class="nav-item"><a href="{{ route('admin.laporan-return') }}" class="nav-link text-white text-nowrap"><i class="bi bi-arrow-counterclockwise menu-icon me-2"></i> <span class="menu-text">Laporan Return Barang</span></a></li>
             <li class="nav-item"><a href="{{ route('admin.accounting.index') }}" class="nav-link text-white text-nowrap"><i class="bi bi-cash-stack menu-icon me-2"></i> <span class="menu-text">Laporan Penjualan</span></a></li>
             <li class="nav-item"><a href="{{ route('admin.price-history.index') }}" class="nav-link text-white text-nowrap"><i class="bi bi-clock-history menu-icon me-2"></i> <span class="menu-text">Histori Perubahan Harga</span></a></li>
