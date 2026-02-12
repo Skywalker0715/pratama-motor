@@ -106,6 +106,9 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
     Route::get('/accounting/export/excel', [AccountingController::class, 'exportExcel'])
         ->name('admin.accounting.export.excel');
 
+    Route::get('/laporan-penjualan/{kode}', [AccountingController::class, 'show'])
+        ->name('admin.laporan-penjualan.show');
+
 });
 
 Route::middleware(['auth', 'active', 'role:user', 'prevent-back-history'])->prefix('user')->group(function () {

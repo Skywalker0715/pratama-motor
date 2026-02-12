@@ -138,6 +138,7 @@
                         <th>TOTAL SALES</th>
                         <th>TOTAL HPP</th>
                         <th>PROFIT</th>
+                        <th>AKSI</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -149,10 +150,15 @@
                             <td class="text-end">Rp {{ number_format($transaksi->total_sales, 0, ',', '.') }}</td>
                             <td class="text-end">Rp {{ number_format($transaksi->total_hpp, 0, ',', '.') }}</td>
                             <td class="text-end fw-semibold text-success">Rp {{ number_format($transaksi->profit, 0, ',', '.') }}</td>
+                            <td class="text-center">
+                                <a href="{{ route('admin.laporan-penjualan.show', $transaksi->transaksi_kode) }}" class="btn btn-sm btn-info">
+                                    <i class="bi bi-eye"></i> Detail
+                                </a>
+                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
+                            <td colspan="7" class="text-center text-muted py-4">
                                 <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem; color: #6c757d;"></i>
                                 Tidak ada data transaksi
                             </td>

@@ -97,6 +97,46 @@ class AccountingController extends Controller
         ];
     }
 
+    public function show($kode)
+    {
+        $transactions = DB::table('transaksi')
+            ->join('barang', 'transaksi.barang_id', '=', 'barang.id')
+            ->join('users', 'transaksi.user_id', '=', 'users.id')
+            ->where('transaksi.transaksi_kode', $kode)
+            ->where('transaksi.jenis', 'penjualan')
+            ->select(
+                'transaksi.transaksi_kode',
+                'transaksi.created_at',
+                'users.name as nama_kasir',
+                'barang.nama_barang',
+                'transaksi.jumlah as qty',
+                'barang.harga'
+            )
+            ->orderBy('transaksi.created_at')
+            ->get();
+
+        if ($transactions->isEmpty()) {
+            abort(404, 'Transaksi tidak ditemukan');
+        }
+
+        $header = (object) [
+            'transaksi_kode' => $transactions->first()->transaksi_kode,
+            'created_at' => $transactions->first()->created_at,
+            'nama_kasir' => $transactions->first()->nama_kasir,
+        ];
+
+        $total = $transactions->sum(function ($item) {
+            return $item->qty * $item->harga;
+        });
+
+        $transactions = $transactions->map(function ($item) {
+            $item->subtotal = $item->qty * $item->harga;
+            return $item;
+        });
+
+        return view('admin.accounting.detail', compact('header', 'transactions', 'total'));
+    }
+
     private function transformTransactions($collection)
     {
         $collection->transform(function ($item) {

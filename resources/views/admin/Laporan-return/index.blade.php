@@ -29,13 +29,17 @@
     <div class="card-body p-2">
         <form method="GET" action="{{ route('admin.laporan-return') }}">
             <div class="row g-2 align-items-end">
-                <div class="col-5">
+                <div class="col-3">
                     <label for="from" class="form-label small mb-1">Dari</label>
                     <input type="date" class="form-control form-control-sm" id="from" name="from" value="{{ request('from') }}">
                 </div>
-                <div class="col-5">
+                <div class="col-3">
                     <label for="to" class="form-label small mb-1">Sampai</label>
                     <input type="date" class="form-control form-control-sm" id="to" name="to" value="{{ request('to') }}">
+                </div>
+                <div class="col-4">
+                    <label for="keyword" class="form-label small mb-1">Keyword</label>
+                    <input type="text" class="form-control form-control-sm" id="keyword" name="keyword" value="{{ request('keyword') }}" placeholder="Search product or user">
                 </div>
                 <div class="col-2">
                     <div class="d-flex gap-1">

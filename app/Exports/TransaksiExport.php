@@ -12,11 +12,13 @@ class TransaksiExport implements FromCollection, WithHeadings
 {
     protected $from;
     protected $to;
+    protected $keyword;
 
-    public function __construct($from = null, $to = null)
+    public function __construct($from = null, $to = null, $keyword = null)
     {
         $this->from = $from;
         $this->to   = $to;
+        $this->keyword = $keyword;
     }
 
    public function collection()
@@ -24,10 +26,22 @@ class TransaksiExport implements FromCollection, WithHeadings
         // 1. Transactions
         $transactions = Transaksi::with(['barang', 'user'])
             ->when($this->from && $this->to, function ($q) {
-                $q->whereBetween('created_at', [
-                    $this->from . ' 00:00:00',
-                    $this->to . ' 23:59:59'
+                $q->whereBetween('tanggal', [
+                    Carbon::parse($this->from)->startOfDay(),
+                    Carbon::parse($this->to)->endOfDay()
                 ]);
+            })
+            ->when($this->keyword, function ($q) {
+                $keyword = $this->keyword;
+                $q->where(function ($sub) use ($keyword) {
+                    $sub->whereHas('barang', function ($b) use ($keyword) {
+                            $b->where('nama_barang', 'like', "%{$keyword}%")
+                              ->orWhere('kode_barang', 'like', "%{$keyword}%");
+                        })
+                        ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$keyword}%"))
+                        ->orWhere('transaksi_kode', 'like', "%{$keyword}%")
+                        ->orWhere('jenis', 'like', "%{$keyword}%");
+                });
             })
             ->get();
 
@@ -36,9 +50,20 @@ class TransaksiExport implements FromCollection, WithHeadings
             ->where('type', 'return')
             ->when($this->from && $this->to, function ($q) {
                 $q->whereBetween('created_at', [
-                    $this->from . ' 00:00:00',
-                    $this->to . ' 23:59:59'
+                    Carbon::parse($this->from)->startOfDay(),
+                    Carbon::parse($this->to)->endOfDay()
                 ]);
+            })
+            ->when($this->keyword, function ($q) {
+                $keyword = $this->keyword;
+                $q->where(function ($sub) use ($keyword) {
+                    $sub->whereHas('barang', function ($b) use ($keyword) {
+                            $b->where('nama_barang', 'like', "%{$keyword}%")
+                              ->orWhere('kode_barang', 'like', "%{$keyword}%");
+                        })
+                        ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$keyword}%"))
+                        ->orWhere('type', 'like', "%{$keyword}%");
+                });
             })
             ->get()
             ->map(function ($item) {

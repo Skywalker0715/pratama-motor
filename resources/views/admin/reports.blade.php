@@ -16,38 +16,61 @@
         </h5>
     </div>
     <div class="card-body">
-        <form method="GET" action="{{ route('admin.reports') }}" class="row g-3 align-items-end">
-            <div class="col-md-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-calendar-event me-1 text-primary"></i>Tanggal Dari
-                </label>
-                <input type="date" name="from" class="form-control" value="{{ request('from') }}">
-            </div>
+        <form method="GET" action="{{ route('admin.reports') }}">
+            <div class="row g-3 align-items-end">
 
-            <div class="col-md-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-calendar-check me-1 text-primary"></i>Tanggal Sampai
-                </label>
-                <input type="date" name="to" class="form-control" value="{{ request('to') }}">
-            </div>
-
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-search me-2"></i>Filter
-                </button>
-            </div>
-
-            <div class="col-md-4 text-end">
-                <div class="btn-group" role="group">
-                   <a href="{{ route('admin.reports.excel', request()->query()) }}"
-                            class="btn btn-success">
-                               <i class="bi bi-file-earmark-excel me-2"></i>Export Excel
-                             </a>
-                            <a href="{{ route('admin.reports.pdf', request()->query()) }}"
-                                     class="btn btn-danger">
-                             <i class="bi bi-file-earmark-pdf me-2"></i>Export PDF
-                      </a>
+                {{-- Tanggal Dari --}}
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold small">
+                        <i class="bi bi-calendar-event me-1 text-primary"></i>Tanggal Dari
+                    </label>
+                    <input type="date" name="from" class="form-control form-control-sm" value="{{ request('from') }}">
                 </div>
+
+                {{-- Tanggal Sampai --}}
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold small">
+                        <i class="bi bi-calendar-check me-1 text-primary"></i>Tanggal Sampai
+                    </label>
+                    <input type="date" name="to" class="form-control form-control-sm" value="{{ request('to') }}">
+                </div>
+
+                {{-- Keyword --}}
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small">
+                        <i class="bi bi-search me-1 text-primary"></i>Keyword
+                    </label>
+                    <input type="text" name="keyword" class="form-control form-control-sm"
+                           value="{{ request('keyword') }}"
+                           placeholder="Search product, user, or transaction code">
+                </div>
+
+                {{-- Tombol Filter & Reset --}}
+                <div class="col-md-2">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm flex-fill">
+                            <i class="bi bi-search me-1"></i>Filter
+                        </button>
+                        <a href="{{ route('admin.reports') }}" class="btn btn-outline-secondary btn-sm flex-fill">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Reset
+                        </a>
+                    </div>
+                </div>
+
+                {{-- Tombol Export Excel & PDF --}}
+                <div class="col-md-2">
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('admin.reports.excel', request()->query()) }}"
+                           class="btn btn-success btn-sm flex-fill">
+                            <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                        </a>
+                        <a href="{{ route('admin.reports.pdf', request()->query()) }}"
+                           class="btn btn-danger btn-sm flex-fill">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                        </a>
+                    </div>
+                </div>
+
             </div>
         </form>
     </div>
@@ -118,7 +141,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
+                            <td colspan="7" class="text-center text-muted py-4">
                                 <i class="bi bi-inbox" style="font-size: 3rem; display: block; margin-bottom: 1rem; color: #6c757d;"></i>
                                 Tidak ada data laporan
                             </td>
@@ -129,58 +152,49 @@
         </div>
     </div>
 
-    {{-- STATISTIK FOOTER (FIX: 4 CARD SEJAJAR) --}}
+    {{-- STATISTIK FOOTER --}}
     @if($transaksis->count() > 0)
     <div class="card-footer bg-light">
         <div class="row text-center g-0">
-            {{-- TOTAL MASUK --}}
             <div class="col-md col-6">
                 <div class="p-3 border-end">
-                    <i class="bi bi-arrow-down-circle text-success" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                    <i class="bi bi-arrow-down-circle text-success" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Masuk</h6>
                     <h4 class="fw-bold text-success mb-0">
                         {{ $transaksis->where('jenis', 'masuk')->sum('jumlah') }}
                     </h4>
                 </div>
             </div>
-
-            {{-- TOTAL RUSAK --}}
             <div class="col-md col-6">
                 <div class="p-3 border-end">
-                    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                    <i class="bi bi-exclamation-triangle text-warning" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Rusak</h6>
                     <h4 class="fw-bold text-warning mb-0">
                         {{ $transaksis->where('jenis', 'rusak')->sum('jumlah') }}
                     </h4>
                 </div>
             </div>
-
-            {{-- TOTAL HILANG --}}
             <div class="col-md col-6">
                 <div class="p-3 border-end">
-                    <i class="bi bi-x-circle text-danger" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                    <i class="bi bi-x-circle text-danger" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Hilang</h6>
                     <h4 class="fw-bold text-danger mb-0">
                         {{ $transaksis->where('jenis', 'hilang')->sum('jumlah') }}
                     </h4>
                 </div>
             </div>
-
-            {{-- TOTAL TERJUAL --}}
             <div class="col-md col-6">
                 <div class="p-3 border-end">
-                    <i class="bi bi-cash-coin text-primary" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                    <i class="bi bi-cash-coin text-primary" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Terjual</h6>
                     <h4 class="fw-bold text-primary mb-0">
                         {{ $transaksis->where('jenis', 'penjualan')->sum('jumlah') }}
                     </h4>
                 </div>
             </div>
-
-            {{-- TOTAL RETURN --}}
             <div class="col-md col-6">
                 <div class="p-3">
-                    <i class="bi bi-arrow-counterclockwise text-secondary" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+                    <i class="bi bi-arrow-counterclockwise text-secondary" style="font-size: 2rem; display: block; margin-bottom: 0.5rem;"></i>
                     <h6 class="mb-1 text-muted small">Total Return</h6>
                     <h4 class="fw-bold text-secondary mb-0">
                         {{ $transaksis->where('jenis', 'return')->sum('jumlah') }}

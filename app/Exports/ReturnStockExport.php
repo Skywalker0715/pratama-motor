@@ -11,24 +11,36 @@ class ReturnStockExport implements FromCollection, WithHeadings
 {
     protected $from;
     protected $to;
+    protected $keyword;
 
-    public function __construct($from = null, $to = null)
+    public function __construct($from = null, $to = null, $keyword = null)
     {
         $this->from = $from;
         $this->to = $to;
+        $this->keyword = $keyword;
     }
 
     public function collection()
     {
         $query = StockMovement::with(['barang', 'user'])
-            ->where('type', 'RETURN');
+            ->where('type', 'return');
 
-        if ($this->from && $this->to) {
-            $query->whereBetween('created_at', [
-                $this->from . ' 00:00:00',
-                $this->to . ' 23:59:59'
+        $query->when($this->from && $this->to, function ($q) {
+            $q->whereBetween('created_at', [
+                Carbon::parse($this->from)->startOfDay(),
+                Carbon::parse($this->to)->endOfDay()
             ]);
-        }
+        });
+
+        $query->when($this->keyword, function ($q) {
+            $keyword = $this->keyword;
+            $q->where(function ($sub) use ($keyword) {
+                $sub->whereHas('barang', function ($b) use ($keyword) {
+                        $b->where('nama_barang', 'like', "%{$keyword}%");
+                    })
+                    ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$keyword}%"));
+            });
+        });
 
         return $query->latest()
             ->get()

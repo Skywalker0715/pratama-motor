@@ -13,27 +13,38 @@ class ReturnExport implements FromCollection, WithHeadings, WithMapping, ShouldA
 {
     protected $from;
     protected $to;
+    protected $keyword;
 
-    public function __construct($from = null, $to = null)
+    public function __construct($from = null, $to = null, $keyword = null)
     {
         $this->from = $from;
         $this->to = $to;
+        $this->keyword = $keyword;
     }
 
     public function collection()
     {
         $query = StockMovement::with(['barang', 'user'])
-            ->where('type', 'RETURN')
-            ->latest();
+            ->where('type', 'return');
 
-        if ($this->from && $this->to) {
-            $query->whereBetween('created_at', [
+        $query->when($this->from && $this->to, function ($q) {
+            $q->whereBetween('created_at', [
                 Carbon::parse($this->from)->startOfDay(),
                 Carbon::parse($this->to)->endOfDay()
             ]);
-        }
+        });
 
-        return $query->get();
+        $query->when($this->keyword, function ($q) {
+            $keyword = $this->keyword;
+            $q->where(function ($sub) use ($keyword) {
+                $sub->whereHas('barang', function ($b) use ($keyword) {
+                        $b->where('nama_barang', 'like', "%{$keyword}%");
+                    })
+                    ->orWhereHas('user', fn($u) => $u->where('name', 'like', "%{$keyword}%"));
+            });
+        });
+
+        return $query->latest()->get();
     }
 
     public function headings(): array

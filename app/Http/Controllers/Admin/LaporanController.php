@@ -34,7 +34,17 @@ class LaporanController extends Controller
     // 1. Fetch Transactions
     $transactions = Transaksi::with(['barang', 'user'])
         ->when($from && $to, function ($q) use ($from, $to) {
-            $q->whereBetween('created_at', [$from, $to]);
+            $q->whereBetween('tanggal', [$from, $to]);
+        })
+        ->when($request->filled('keyword'), function ($q) use ($request) {
+            $keyword = $request->keyword;
+            $q->where(function ($sub) use ($keyword) {
+                $sub->where('jenis', 'like', "%{$keyword}%")
+                    ->orWhereHas('barang', function ($b) use ($keyword) {
+                        $b->where('kode_barang', 'like', "%{$keyword}%")
+                            ->orWhere('nama_barang', 'like', "%{$keyword}%");
+                    });
+            });
         })
         ->get();
 
@@ -43,6 +53,18 @@ class LaporanController extends Controller
         ->where('type', 'return')
         ->when($from && $to, function ($q) use ($from, $to) {
             $q->whereBetween('created_at', [$from, $to]);
+        })
+        ->when($request->filled('keyword'), function ($q) use ($request) {
+            $keyword = $request->keyword;
+            $q->where(function ($sub) use ($keyword) {
+                $sub->whereHas('barang', function ($b) use ($keyword) {
+                    $b->where('nama_barang', 'like', "%{$keyword}%")
+                        ->orWhere('kode_barang', 'like', "%{$keyword}%");
+                })
+                ->orWhereHas('user', function ($u) use ($keyword) {
+                    $u->where('name', 'like', "%{$keyword}%");
+                });
+            });
         })
         ->get()
         ->map(function ($item) {
@@ -83,20 +105,30 @@ class LaporanController extends Controller
     public function exportExcel(Request $request)
     {
     return Excel::download(
-        new TransaksiExport($request->from, $request->to),
+        new TransaksiExport($request->from, $request->to, $request->keyword),
         'laporan-transaksi.xlsx'
-    ); 
+    );
     }
 
      public function exportPdf(Request $request)
     {
     $from = $request->from;
     $to = $request->to;
+    $keyword = $request->keyword;
 
     // 1. Transactions
     $transactions = Transaksi::with(['barang', 'user'])
         ->when($from && $to, function ($q) use ($from, $to) {
-            $q->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+            $q->whereBetween('tanggal', [$from . ' 00:00:00', $to . ' 23:59:59']);
+        })
+        ->when($keyword, function ($q) use ($keyword) {
+            $q->where(function ($sub) use ($keyword) {
+                $sub->where('jenis', 'like', "%{$keyword}%")
+                    ->orWhereHas('barang', function ($b) use ($keyword) {
+                        $b->where('kode_barang', 'like', "%{$keyword}%")
+                            ->orWhere('nama_barang', 'like', "%{$keyword}%");
+                    });
+            });
         })
         ->get();
 
@@ -105,6 +137,17 @@ class LaporanController extends Controller
         ->where('type', 'return')
         ->when($from && $to, function ($q) use ($from, $to) {
             $q->whereBetween('created_at', [$from . ' 00:00:00', $to . ' 23:59:59']);
+        })
+        ->when($keyword, function ($q) use ($keyword) {
+            $q->where(function ($sub) use ($keyword) {
+                $sub->whereHas('barang', function ($b) use ($keyword) {
+                    $b->where('nama_barang', 'like', "%{$keyword}%")
+                        ->orWhere('kode_barang', 'like', "%{$keyword}%");
+                })
+                ->orWhereHas('user', function ($u) use ($keyword) {
+                    $u->where('name', 'like', "%{$keyword}%");
+                });
+            });
         })
         ->get()
         ->map(function ($item) {
@@ -120,5 +163,4 @@ class LaporanController extends Controller
 
     return $pdf->download('laporan-transaksi.pdf');
     }
-
 }
