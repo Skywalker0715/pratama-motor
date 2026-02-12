@@ -9,6 +9,7 @@ use Carbon\Carbon;
 use App\Exports\AccountingExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Transaksi;
 
 class AccountingController extends Controller
 {
@@ -25,7 +26,11 @@ class AccountingController extends Controller
         // Transformasi data untuk pagination
         $this->transformTransactions($transactions->getCollection());
 
-        return view('admin.accounting.index', compact('summary', 'transactions', 'startDate', 'endDate'));
+        $totalOmzet = $summary->total_omzet;
+        $totalHpp = $summary->total_hpp;
+        $totalProfit = $summary->total_profit;
+
+        return view('admin.accounting.index', compact('summary', 'transactions', 'startDate', 'endDate', 'totalOmzet', 'totalHpp', 'totalProfit'));
     }
 
     public function exportExcel(Request $request)
@@ -146,5 +151,20 @@ class AccountingController extends Controller
             $item->transaksi_kode = $item->transaksi_kode ?? '-';
             return $item;
         });
+    }
+
+    public function cleanup(Request $request)
+    {
+        $years = $request->years;
+
+        if ($years < 1 || $years > 7) {
+            return back()->with('error', 'Invalid year selection.');
+        }
+
+        $cutoff = now()->subYears($years);
+
+        Transaksi::where('created_at', '<', $cutoff)->delete();
+
+        return back()->with('success', 'Old transaction data deleted.');
     }
 }

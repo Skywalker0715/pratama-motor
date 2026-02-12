@@ -163,4 +163,19 @@ class LaporanController extends Controller
 
     return $pdf->download('laporan-transaksi.pdf');
     }
+
+    public function cleanup(Request $request)
+    {
+        $years = $request->years;
+
+        if ($years < 1 || $years > 7) {
+            return back()->with('error', 'Invalid year selection.');
+        }
+
+        $cutoff = now()->subYears($years);
+
+        StockMovement::where('created_at', '<', $cutoff)->delete();
+
+        return back()->with('success', 'Old stock data deleted.');
+    }
 }

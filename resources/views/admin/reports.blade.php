@@ -36,7 +36,7 @@
                 </div>
 
                 {{-- Keyword --}}
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label fw-semibold small">
                         <i class="bi bi-search me-1 text-primary"></i>Keyword
                     </label>
@@ -57,17 +57,32 @@
                     </div>
                 </div>
 
-                {{-- Tombol Export Excel & PDF --}}
-                <div class="col-md-2">
-                    <div class="d-flex gap-2">
+                {{-- Tombol Export + Cleanup --}}
+                <div class="col-md-3">
+                    <div class="d-flex gap-2 justify-content-end">
                         <a href="{{ route('admin.reports.excel', request()->query()) }}"
-                           class="btn btn-success btn-sm flex-fill">
+                           class="btn btn-success btn-sm">
                             <i class="bi bi-file-earmark-excel me-1"></i>Excel
                         </a>
                         <a href="{{ route('admin.reports.pdf', request()->query()) }}"
-                           class="btn btn-danger btn-sm flex-fill">
+                           class="btn btn-danger btn-sm">
                             <i class="bi bi-file-earmark-pdf me-1"></i>PDF
                         </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-danger btn-sm dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-trash me-1"></i>Cleanup
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                                <li><button class="dropdown-item" onclick="confirmCleanup(1)">Delete data older than 1 year</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(2)">Delete data older than 2 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(3)">Delete data older than 3 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(4)">Delete data older than 4 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(5)">Delete data older than 5 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(6)">Delete data older than 6 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(7)">Delete data older than 7 years</button></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
 
@@ -212,5 +227,21 @@
     {{ $transaksis->withQueryString()->onEachSide(1)->links('pagination::bootstrap-5') }}
 </div>
 @endif
+
+<script>
+function confirmCleanup(years) {
+    if (confirm(`Are you sure you want to delete data older than ${years} years?`)) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route("reports.cleanup") }}';
+        form.innerHTML = `
+            @csrf
+            <input type="hidden" name="years" value="${years}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
 
 @endsection

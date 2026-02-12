@@ -4,64 +4,100 @@
 
 @section('content')
 
-<div class="mb-4 d-flex justify-content-between align-items-center">
-    <div>
-        <h2 class="fw-bold text-dark mb-1">Laporan Return</h2>
-        <p class="text-muted mb-0">Filter dan export laporan return barang</p>
-    </div>
-    <div class="d-flex gap-2">
-        <a href="{{ route('admin.laporan-return.pdf', request()->query()) }}" class="btn btn-danger btn-sm">
-            <i class="bi bi-file-earmark-pdf me-1"></i>PDF
-        </a>
-        <a href="{{ route('admin.laporan-return.excel', request()->query()) }}" class="btn btn-success btn-sm">
-            <i class="bi bi-file-earmark-excel me-1"></i>Excel
-        </a>
-    </div>
+<div class="mb-4">
+    <h2 class="fw-bold text-dark">Laporan Return</h2>
+    <p class="text-muted mb-0">Filter dan export laporan return barang</p>
 </div>
 
-<!-- Filter Section -->
-<div class="card shadow-sm mb-3">
-    <div class="card-header py-2">
-        <h6 class="mb-0 fw-semibold">
+{{-- FILTER & EXPORT --}}
+<div class="card shadow-sm mb-4">
+    <div class="card-header">
+        <h5 class="mb-0 fw-semibold">
             <i class="bi bi-funnel me-2"></i>Filter Laporan
-        </h6>
+        </h5>
     </div>
-    <div class="card-body p-2">
+    <div class="card-body">
         <form method="GET" action="{{ route('admin.laporan-return') }}">
-            <div class="row g-2 align-items-end">
-                <div class="col-3">
-                    <label for="from" class="form-label small mb-1">Dari</label>
+            <div class="row g-3 align-items-end">
+
+                {{-- Tanggal Dari --}}
+                <div class="col-md-2">
+                    <label for="from" class="form-label fw-semibold small">
+                        <i class="bi bi-calendar-event me-1 text-primary"></i>Tanggal Dari
+                    </label>
                     <input type="date" class="form-control form-control-sm" id="from" name="from" value="{{ request('from') }}">
                 </div>
-                <div class="col-3">
-                    <label for="to" class="form-label small mb-1">Sampai</label>
+
+                {{-- Tanggal Sampai --}}
+                <div class="col-md-2">
+                    <label for="to" class="form-label fw-semibold small">
+                        <i class="bi bi-calendar-check me-1 text-primary"></i>Tanggal Sampai
+                    </label>
                     <input type="date" class="form-control form-control-sm" id="to" name="to" value="{{ request('to') }}">
                 </div>
-                <div class="col-4">
-                    <label for="keyword" class="form-label small mb-1">Keyword</label>
-                    <input type="text" class="form-control form-control-sm" id="keyword" name="keyword" value="{{ request('keyword') }}" placeholder="Search product or user">
+
+                {{-- Keyword --}}
+                <div class="col-md-3">
+                    <label for="keyword" class="form-label fw-semibold small">
+                        <i class="bi bi-search me-1 text-primary"></i>Keyword
+                    </label>
+                    <input type="text" class="form-control form-control-sm" id="keyword" name="keyword"
+                           value="{{ request('keyword') }}" placeholder="Search product or user">
                 </div>
-                <div class="col-2">
-                    <div class="d-flex gap-1">
-                        <button type="submit" class="btn btn-primary btn-sm px-2 w-100">
-                            <i class="bi bi-search"></i>
+
+                {{-- Tombol Filter & Reset --}}
+                <div class="col-md-2">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm flex-fill">
+                            <i class="bi bi-search me-1"></i>Filter
                         </button>
-                        <a href="{{ route('admin.laporan-return') }}" class="btn btn-secondary btn-sm px-2 w-100">
-                            <i class="bi bi-x"></i>
+                        <a href="{{ route('admin.laporan-return') }}" class="btn btn-outline-secondary btn-sm flex-fill">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Reset
                         </a>
                     </div>
                 </div>
+
+                {{-- Tombol Export + Cleanup --}}
+                <div class="col-md-3">
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{{ route('admin.laporan-return.excel', request()->query()) }}"
+                           class="btn btn-success btn-sm">
+                            <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                        </a>
+                        <a href="{{ route('admin.laporan-return.pdf', request()->query()) }}"
+                           class="btn btn-danger btn-sm">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-danger btn-sm dropdown-toggle" type="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-trash me-1"></i>Cleanup
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm rounded-3">
+                                <li><button class="dropdown-item" onclick="confirmCleanup(1)">Delete data older than 1 year</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(2)">Delete data older than 2 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(3)">Delete data older than 3 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(4)">Delete data older than 4 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(5)">Delete data older than 5 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(6)">Delete data older than 6 years</button></li>
+                                <li><button class="dropdown-item" onclick="confirmCleanup(7)">Delete data older than 7 years</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </form>
     </div>
 </div>
 
-<!-- Data Table -->
+{{-- TABEL DATA RETURN --}}
 <div class="card shadow-sm">
-    <div class="card-header">
+    <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0 fw-semibold">
             <i class="bi bi-table me-2"></i>Data Return Barang
         </h5>
+        <span class="badge bg-light text-dark">Total: {{ $returns->total() }} data</span>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -119,5 +155,21 @@
     {{ $returns->withQueryString()->onEachSide(1)->links('pagination::bootstrap-5') }}
 </div>
 @endif
+
+<script>
+function confirmCleanup(years) {
+    if (confirm(`Are you sure you want to delete data older than ${years} years?`)) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route("laporan-return.cleanup") }}';
+        form.innerHTML = `
+            @csrf
+            <input type="hidden" name="years" value="${years}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>
 
 @endsection

@@ -69,6 +69,8 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
         ->name('admin.reports.excel');
     Route::get('/reports/pdf', [LaporanController::class, 'exportPdf'])
         ->name('admin.reports.pdf');
+    Route::post('/reports/cleanup', [LaporanController::class, 'cleanup'])
+        ->name('reports.cleanup');
         
     // users
     Route::get('/users', [UserController::class, 'index'])
@@ -96,6 +98,9 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
     Route::get('/admin/laporan-return/pdf', [LaporanReturnController::class, 'exportPdf'])
     ->name('admin.laporan-return.pdf');
 
+    Route::post('/laporan-return/cleanup', [LaporanReturnController::class, 'cleanup'])
+    ->name('laporan-return.cleanup');
+
     //Laporan Keuangan Laba dan Rugi
     Route::get('/accounting', [AccountingController::class, 'index'])
         ->name('admin.accounting.index');
@@ -108,6 +113,9 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
 
     Route::get('/laporan-penjualan/{kode}', [AccountingController::class, 'show'])
         ->name('admin.laporan-penjualan.show');
+
+    Route::post('/accounting/cleanup', [AccountingController::class, 'cleanup'])
+        ->name('accounting.cleanup');
 
 });
 

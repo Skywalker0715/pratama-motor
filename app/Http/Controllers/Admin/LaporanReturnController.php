@@ -97,4 +97,25 @@ class LaporanReturnController extends Controller
 
         return $pdf->download('laporan-return.pdf');
     }
+
+    public function cleanup(Request $request)
+    {
+        $years = $request->years;
+
+        if ($years < 1 || $years > 7) {
+            return back()->with('error', 'Invalid year selection.');
+        }
+
+        $cutoff = now()->subYears($years);
+
+        // Delete return items first due to foreign key
+        \App\Models\ReturnItem::whereHas('return', function ($q) use ($cutoff) {
+            $q->where('created_at', '<', $cutoff);
+        })->delete();
+
+        // Then delete returns
+        \App\Models\ReturnModel::where('created_at', '<', $cutoff)->delete();
+
+        return back()->with('success', 'Old return data deleted.');
+    }
 }
