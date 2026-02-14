@@ -89,6 +89,15 @@
     </aside>
 
     <main class="pt-20 p-4 transition-all duration-300" :class="sidebarOpen ? 'ml-64' : 'ml-20'">
+        @if(auth()->check() && request()->routeIs('user.dashboard'))
+            @php
+                $hour = date('H');
+                $greeting = $hour < 12 ? 'Selamat Pagi' : ($hour < 18 ? 'Selamat Siang' : 'Selamat Malam');
+            @endphp
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-gray-800">{{ $greeting }}, {{ auth()->user()->name }} </h2>
+            </div>
+        @endif
         @yield('content')
     </main>
 

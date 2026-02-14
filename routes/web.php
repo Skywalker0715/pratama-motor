@@ -46,7 +46,7 @@ Route::post('/logout', [AuthController::class, 'logout'])
     ->middleware('auth')
     ->name('logout');
 
-Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin')->group(function () {
+Route::middleware(['auth', 'role:admin', 'prevent-back-history', 'active'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])
     ->name('admin.dashboard');    
 
@@ -74,11 +74,28 @@ Route::middleware(['auth', 'role:admin', 'prevent-back-history'])->prefix('admin
         
     // users
     Route::get('/users', [UserController::class, 'index'])
-        ->name('admin.users');
+        ->name('admin.users.index');
     Route::delete('/users/{user}', [UserController::class, 'destroy'])
         ->name('admin.users.destroy');
     Route::patch('/users/{user}/activate', [UserController::class, 'activate'])
         ->name('admin.users.activate');
+    Route::patch('/users/{user}/deactivate', [UserController::class, 'deactivate'])
+        ->name('admin.users.deactivate');
+
+
+    Route::get('/users/create-admin',
+        [App\Http\Controllers\Admin\UserController::class, 'createAdmin']
+    )->name('admin.users.createAdmin');
+
+    Route::post('/users/store-admin',
+        [App\Http\Controllers\Admin\UserController::class, 'storeAdmin']
+    )->name('admin.users.storeAdmin');
+
+    // Manual Password Reset
+    Route::get('/users/{id}/reset-password', [UserController::class, 'showResetForm'])
+        ->name('admin.users.reset-password');
+    Route::post('/users/{id}/reset-password', [UserController::class, 'resetPassword'])
+        ->name('admin.users.reset-password');
 
     // Price History (ADMIN)
     Route::get('/price-history', [PriceController::class, 'history'])

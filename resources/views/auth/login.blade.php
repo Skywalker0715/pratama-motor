@@ -35,11 +35,6 @@
             </div>
 
             <div class="form-extra">
-                <label class="remember">
-                    <input type="checkbox" name="remember">
-                    Ingat saya
-                </label>
-
                 <a href="{{ route('forgot-password') }}" class="link">
                     Lupa password?
                 </a>

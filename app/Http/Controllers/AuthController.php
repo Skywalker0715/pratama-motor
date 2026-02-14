@@ -79,6 +79,12 @@ class AuthController extends Controller
     {
         $request->validate(['email' => 'required|email']);
 
+        $user = User::where('email', $request->email)->first();
+
+        if ($user && $user->role !== 'admin') {
+            return back()->withErrors(['email' => 'Password reset is only available for administrators.']);
+        }
+
         $status = Password::sendResetLink(
             $request->only('email')
         );

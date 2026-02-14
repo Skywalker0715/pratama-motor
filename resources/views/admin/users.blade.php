@@ -17,10 +17,13 @@
 
     <div class="card-body p-0">
         <div class="mb-3 px-3 pt-3">
-            <a href="{{ route('admin.users', ['status' => 'active']) }}" class="btn {{ $status == 'active' ? 'btn-primary' : 'btn-outline-primary' }} me-2">
+            <a href="{{ route('admin.users.createAdmin') }}" class="btn btn-success me-2">
+                <i class="bi bi-person-plus me-1"></i>Add Admin
+            </a>
+            <a href="{{ route('admin.users.index', ['status' => 'active']) }}" class="btn {{ $status == 'active' ? 'btn-primary' : 'btn-outline-primary' }} me-2">
                 Active Users
             </a>
-            <a href="{{ route('admin.users', ['status' => 'inactive']) }}" class="btn {{ $status == 'inactive' ? 'btn-secondary' : 'btn-outline-secondary' }}">
+            <a href="{{ route('admin.users.index', ['status' => 'inactive']) }}" class="btn {{ $status == 'inactive' ? 'btn-secondary' : 'btn-outline-secondary' }}">
                 Inactive Users
             </a>
         </div>
@@ -33,7 +36,7 @@
                         <th>EMAIL</th>
                         <th width="120">ROLE</th>
                         <th width="100">STATUS</th>
-                        <th width="100">AKSI</th>
+                        <th>AKSI</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,30 +70,72 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                @if(!$user->is_active)
-                                    <form method="POST" action="{{ route('admin.users.activate', $user->id) }}" style="display: inline;">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit"
-                                            class="btn btn-icon btn-success"
-                                            title="Aktifkan User">
-                                            <i class="bi bi-person-check"></i>
+                                <div class="d-flex justify-content-center gap-1">
+                                    {{-- Tombol Reset Password --}}
+                                    <a href="{{ route('admin.users.reset-password', $user->id) }}"
+                                        class="btn btn-icon btn-info btn-sm"
+                                        title="Reset Password">
+                                        <i class="bi bi-key"></i>
+                                    </a>
+
+                                    @if($user->is_active)
+                                        {{-- Tombol Nonaktifkan (menggantikan Hapus) --}}
+                                        <button type="button"
+                                            class="btn btn-icon btn-warning btn-sm deactivate-btn"
+                                            data-action="{{ route('admin.users.deactivate', $user->id) }}"
+                                            title="Nonaktifkan User">
+                                            <i class="bi bi-person-dash"></i>
                                         </button>
-                                    </form>
-                                @endif
-                                <form class="delete-form" style="display: inline;">
-                                     <button type="button"
-                                         class="btn btn-icon btn-danger delete-btn"
-                                         data-action="{{ route('admin.users.destroy', $user->id) }}"
-                                         title="Hapus User">
-                                         <i class="bi bi-trash"></i>
-                                     </button>
-                                </form>
+                                    @else
+                                        {{-- Tombol Aktifkan --}}
+                                        <form method="POST" action="{{ route('admin.users.activate', $user->id) }}" class="m-0">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit" class="btn btn-icon btn-success btn-sm" title="Aktifkan User">
+                                                <i class="bi bi-person-check"></i>
+                                            </button>
+                                        </form>
+                                        {{-- Tombol Hapus (Muncul saat user inactive) --}}
+                                        <button type="button"
+                                            class="btn btn-icon btn-danger btn-sm delete-btn"
+                                            data-action="{{ route('admin.users.destroy', $user->id) }}"
+                                            title="Hapus User">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+        </div>
+    </div>
+</div>
+
+{{-- MODAL CONFIRM DEACTIVATE --}}
+<div class="modal fade" id="confirmDeactivateModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title">
+                    <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>Konfirmasi Nonaktifkan
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <p class="mb-0">Yakin ingin menonaktifkan user ini? User tidak akan bisa login kembali.</p>
+            </div>
+
+            <div class="modal-footer justify-content-center">
+                <button class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
+                    Batal
+                </button>
+                <button class="btn btn-sm btn-warning" id="confirmDeactivateBtn">
+                    Ya, Nonaktifkan
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -101,21 +146,19 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h6 class="modal-title">
-                    <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>Konfirmasi Hapus Permanen
+                    <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>Konfirmasi Hapus
                 </h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-
             <div class="modal-body text-center">
-                <p class="mb-0">Yakin ingin menonaktifkan user ini? User tidak akan bisa login kembali, namun semua data historis akan tetap utuh.</p>
+                <p class="mb-0">Yakin ingin menghapus user ini secara permanen?</p>
             </div>
-
             <div class="modal-footer justify-content-center">
                 <button class="btn btn-sm btn-secondary" data-bs-dismiss="modal">
                     Batal
                 </button>
                 <button class="btn btn-sm btn-danger" id="confirmDeleteBtn">
-                    Ya, Hapus Permanen
+                    Ya, Hapus
                 </button>
             </div>
         </div>
@@ -124,6 +167,39 @@
 
 @push('scripts')
 <script>
+let deactivateAction = null;
+
+document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.deactivate-btn');
+    if (!btn) return;
+
+    deactivateAction = btn.getAttribute('data-action');
+
+    const modal = new bootstrap.Modal(
+        document.getElementById('confirmDeactivateModal')
+    );
+    modal.show();
+});
+
+document.getElementById('confirmDeactivateBtn')
+    .addEventListener('click', function () {
+
+        if (!deactivateAction) return;
+
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = deactivateAction;
+
+        form.innerHTML = `
+            @csrf
+            @method('PATCH')
+        `;
+
+        document.body.appendChild(form);
+        form.submit();
+});
+
+// Script untuk Delete
 let deleteAction = null;
 
 document.addEventListener('click', function (e) {
@@ -138,22 +214,14 @@ document.addEventListener('click', function (e) {
     modal.show();
 });
 
-document.getElementById('confirmDeleteBtn')
-    .addEventListener('click', function () {
-
-        if (!deleteAction) return;
-
-        const form = document.createElement('form');
-        form.method = 'POST';
-        form.action = deleteAction;
-
-        form.innerHTML = `
-            @csrf
-            @method('DELETE')
-        `;
-
-        document.body.appendChild(form);
-        form.submit();
+document.getElementById('confirmDeleteBtn').addEventListener('click', function () {
+    if (!deleteAction) return;
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = deleteAction;
+    form.innerHTML = `@csrf @method('DELETE')`;
+    document.body.appendChild(form);
+    form.submit();
 });
 </script>
 @endpush

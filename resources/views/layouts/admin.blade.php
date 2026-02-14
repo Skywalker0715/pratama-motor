@@ -74,6 +74,15 @@
         </nav>
 
         <main class="p-4">
+            @if(auth()->check() && request()->routeIs('admin.dashboard'))
+                @php
+                    $hour = date('H');
+                    $greeting = $hour < 12 ? 'Selamat Pagi' : ($hour < 18 ? 'Selamat Siang' : 'Selamat Malam');
+                @endphp
+                <div class="mb-4">
+                    <h2 class="fw-bold text-dark">{{ $greeting }}, {{ auth()->user()->name }} </h2>
+                </div>
+            @endif
             @yield('content')
         </main>
     </div>
